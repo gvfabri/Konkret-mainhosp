@@ -7,7 +7,7 @@ no seu trabalho cotidiano.
 
 1. Clone o repositório
 ```bash
-git clone https://github.com/ES2024Konkret/Konkret
+git clone https://github.com/ES2024Konkret/Konkret-main
 ```
 
 2. Execute o container
