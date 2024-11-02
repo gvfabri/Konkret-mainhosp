@@ -1,11 +1,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 import os
-from dotenv import load_dotenv
 from pydantic import BaseModel
 from .models import Base
 
-load_dotenv()
 
 # Pega a URL do banco de dados do arquivo .env
 #DATABASE_URL = os.getenv("DATABASE_URL")
