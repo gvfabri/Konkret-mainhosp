@@ -24,5 +24,5 @@ alembic upgrade head
 
 Após a execução do container, acesse o postgres com o seguinte comando
 ```bash
-docker exec -it konkret-db-1 psql -U postgres -d postgres_db
+docker exec -it konkret-main-db-1 psql -U postgres -d postgres_db
 ```
