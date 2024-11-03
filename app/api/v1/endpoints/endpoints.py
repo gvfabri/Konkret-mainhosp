@@ -4,7 +4,8 @@ import json
 from ...services.user_service import UserService
 from ...services.work_service import WorkService
 from ...services.employee_service import EmployeeService
-from ...dependencies import get_user_service, get_employee_service, get_work_service
+from ...services.proprietary_service import ProprietaryService
+from ...dependencies import get_user_service, get_employee_service, get_work_service, get_proprietary_service
 
 router = APIRouter()
 
@@ -145,3 +146,49 @@ def delete_work(
         work_service.delete(id)
     except Exception as e:
         raise HTTPException(status_code=400,detaif=f"Deu erro: {str(e)}")
+    
+
+@router.post("/proprietary")
+def add_proprietary(
+    name: Annotated[str, Query()],
+    cpf: Annotated[str, Query()],
+    proprietary_service: Annotated[ProprietaryService, Depends(get_proprietary_service)]
+):
+    try:
+        proprietary = proprietary_service.create_proprietary(name,cpf)
+    except Exception as e:
+        raise HTTPException(status_code=400,detaif=f"Deu erro: {str(e)}")
+
+@router.get("/proprietary")
+def getall_proprietaries(
+    proprietary_service: Annotated[ProprietaryService, Depends(get_proprietary_service)]
+):
+    try:
+        return proprietary_service.all()
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")
+    
+@router.get("/proprietary/{id}")
+def get_proprietary(
+    proprietary_service: Annotated[EmployeeService, Depends(get_proprietary_service)]
+):
+    try:
+        proprietary = proprietary_service.get(id)
+        if proprietary is None:
+            raise HTTPException(status_code=404, detail=f"ID: '{id}'não encontrado.")
+        return proprietary
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")
+    
+@router.delete("/proprietary/{id}")
+def delete_proprietary(
+    id:str,
+    proprietary_service: Annotated[ProprietaryService, Depends(get_proprietary_service)]
+):
+    try:
+        result = proprietary_service.delete(id)
+        if result is None:
+            raise HTTPException(status_code=404, detail=f"ID: '{id}'não encontrado.")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")
+    

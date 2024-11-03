@@ -17,7 +17,7 @@ class User(Base):
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
 class Proprietary(Base):
-    __tablename__ = "proprietaries"
+    __tablename__ = "proprietary"
 
     id = Column(String, primary_key=True, index=True,default=lambda: str(uuid4()))
     name = Column(String, nullable=False)
