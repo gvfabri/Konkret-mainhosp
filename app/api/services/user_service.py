@@ -7,5 +7,3 @@ class UserService:
 
     def create_user(self,name: str,phone: str,email: str):
         self.buyer_repository.create(name,phone,email)
-
-    

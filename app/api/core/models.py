@@ -25,20 +25,20 @@ class Proprietary(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
-class MaoDeObra(Base):
-    __tablename__ = "mao_de_obra"
+class Employee(Base):
+    __tablename__ = "employees"
 
-    id_funcionario = Column(String, primary_key=True, index=True,default=lambda: str(uuid4()))
-    nome = Column(String, nullable=True)
-    rg = Column(String, nullable=False)
-    cpf = Column(String, nullable=True)
-    cargo = Column(String, nullable=True)
-    salario = Column(Float, nullable=False)
+    id = Column(String, primary_key=True, index=True,default=lambda: str(uuid4()))
+    name = Column(String, nullable=True)
+    rg = Column(Integer, nullable=True)
+    cpf = Column(Integer, nullable=False)
+    role = Column(String, nullable=True)
+    salary = Column(Float, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
-class Workframe(Base):
-    __tablename__ = 'workframe'
+class Work(Base):
+    __tablename__ = 'works'
     id = Column(String, primary_key=True, index=True,default=lambda: str(uuid4()))
     address = Column(String, nullable=False)
     photos = Column(ARRAY(String), nullable=True)
