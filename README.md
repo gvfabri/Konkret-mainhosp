@@ -10,7 +10,7 @@ no seu trabalho cotidiano.
 git clone https://github.com/ES2024Konkret/Konkret-main
 ```
 
-2. Crie um ambient
+2. Crie um ambiente
 ```bash
 python -m venv env
 ```
