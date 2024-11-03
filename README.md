@@ -41,3 +41,8 @@ Após a execução do container, acesse o postgres com o seguinte comando
 ```bash
 docker exec -it konkret-main-db-1 psql -U postgres -d postgres_db
 ```
+
+Então use o uvicorn para rodar um server local
+```bash
+uvicorn app.api.main:app
+```
