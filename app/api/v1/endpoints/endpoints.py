@@ -1,8 +1,10 @@
 from fastapi import APIRouter, Request, Query, Depends, HTTPException
 from typing import Annotated
+import json
 from ...services.user_service import UserService
+from ...services.workframe_service import WorkframeService
 from ...services.mao_de_obra_service import MaoDeObraService
-from ...dependencies import get_user_service, get_mao_de_obra_service
+from ...dependencies import get_user_service, get_mao_de_obra_service, get_workframe_service
 
 router = APIRouter()
 
@@ -36,12 +38,73 @@ def add_mao_de_obra(
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")
 
+@router.post("/workframe")
+def add_workframe(
+    address: Annotated[str, Query()],
+    photos: Annotated[list, Query()],
+    workframe_service: Annotated[WorkframeService, Depends(get_workframe_service)]
+):
+    try:
+        user = workframe_service.create_workframe(address, photos)
+    except Exception as e:
+        raise HTTPException(status_code=400,detaif=f"Deu erro: {str(e)}")
+    
+@router.put("/workframe/{id}/addphoto")
+def add_photo_to_workframe(
+    id: str,
+    photo: Annotated[str, Query()],
+    workframe_service: Annotated[WorkframeService, Depends(get_workframe_service)]
+):
+    try:
+        workframe_service.add_photo(id, photo)
+    except Exception as e:
+        raise HTTPException(status_code=400,detaif=f"Deu erro: {str(e)}")
+    
+@router.put("/workframe/{id}/removephoto")
+def remove_photo_from_workframe(
+    id: str,
+    photo: Annotated[str, Query()],
+    workframe_service: Annotated[WorkframeService, Depends(get_workframe_service)]
+):
+    try:
+        workframe_service.remove_photo(id, photo)
+    except Exception as e:
+        raise HTTPException(status_code=400,detaif=f"Deu erro: {str(e)}")
+    
+@router.get("/workframe")
+def get_workframes(
+    workframe_service: Annotated[WorkframeService, Depends(get_workframe_service)]
+):
+    try:
+        return workframe_service.all()
+    except Exception as e:
+        raise HTTPException(status_code=400,detaif=f"Deu erro: {str(e)}")
+    
+@router.get("/workframe/{id}")
+def get_workframe(
+    id: str,
+    workframe_service: Annotated[WorkframeService, Depends(get_workframe_service)]
+):
+    try:
+        return workframe_service.get(id)
+    except Exception as e:
+        raise HTTPException(status_code=400,detaif=f"Deu erro: {str(e)}")
+    
+@router.delete("/workframe/{id}")
+def delete_workframe(
+    id: str,
+    workframe_service: Annotated[WorkframeService, Depends(get_workframe_service)]
+):
+    try:
+        workframe_service.delete(id)
+    except Exception as e:
+        raise HTTPException(status_code=400,detaif=f"Deu erro: {str(e)}")
 
 @router.put("/update-mao-de-obra/{id_funcionario}")
 def update_mao_de_obra(
     id_funcionario: str,
-    salario: Annotated[float, Query(default=None)],
-    cargo: Annotated[str, Query(default=None)],
+    salario: Annotated[float, Query()],
+    cargo: Annotated[str, Query()],
     mao_de_obra_service: Annotated[MaoDeObraService, Depends(get_mao_de_obra_service)]
 ):
     try: 
