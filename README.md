@@ -10,12 +10,27 @@ no seu trabalho cotidiano.
 git clone https://github.com/ES2024Konkret/Konkret-main
 ```
 
-2. Execute o container
+2. Crie um ambient
+```bash
+python -m venv env
+```
+
+3. Ative o ambiente
+```bash
+source env/bin/activate
+```
+
+4. Instale os requerimentos
+```bash
+pip install -r requirements.txt
+```
+
+5. Execute o container
 ```bash
 docker compose up
 ```
 
-3. Execute o alembic
+6. Execute o alembic
 ```bash
 alembic upgrade head
 ```
