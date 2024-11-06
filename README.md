@@ -35,6 +35,8 @@ docker compose up
 alembic upgrade head
 ```
 
+7. Está pronto para usar!
+
 ## Uso
 
 Após a execução do container, acesse o postgres com o seguinte comando
