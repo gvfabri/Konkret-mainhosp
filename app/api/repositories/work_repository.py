@@ -20,7 +20,7 @@ class WorkRepository:
         work = self.db.query(Work).filter(Work.id == id).first()
         if work:
             return work
-        return f"Obra {id} não encontrada!"
+        return False
     
     def add_photo(self, id: str, photo: str):
         work = self.db.query(Work).filter(Work.id == id).first()
@@ -30,8 +30,8 @@ class WorkRepository:
             flag_modified(work, "photos")
             self.db.commit()
             self.db.refresh(work)
-            return "Foto adicionada com sucesso!", work
-        return f"Obra {id} não encontrada!"
+            return work
+        return False
     
     def remove_photo(self, id: str, photo: str):
         work = self.db.query(Work).filter(Work.id == id).first()
@@ -41,15 +41,15 @@ class WorkRepository:
                 flag_modified(work, "photos")
                 self.db.commit()
                 self.db.refresh(work)
-                return "Foto removida com sucesso!", work
+                return work
             except ValueError:
-                return f"Foto {photo} não encontrada!"
-        return f"Obra {id} não encontrada!"
+                return ValueError(f"Foto {photo} não encontrada!")
+        return False
     
     def delete(self, id: str):
         work = self.db.query(Work).filter(Work.id == id).first()
         if work:
             self.db.delete(work)
             self.db.commit()
-            return f"Obra {id} deletada."
-        return f"Obra {id} não encontrada!"
+            return True
+        return False

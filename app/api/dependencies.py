@@ -15,5 +15,6 @@ def get_employee_service(db: Annotated[Session, Depends(get_db)]):
 
 def get_work_service(db: Annotated[Session, Depends(get_db)]):
     return WorkService(db)
+
 def get_proprietary_service(db: Annotated[Session, Depends(get_db)]):
     return ProprietaryService(db)

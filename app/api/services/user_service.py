@@ -3,7 +3,19 @@ from sqlalchemy.orm import Session
 
 class UserService:
     def __init__(self, db: Session):
-        self.buyer_repository = UserRepository(db)
+        self.user_repository = UserRepository(db)
 
     def create_user(self,name: str,phone: str,email: str):
-        self.buyer_repository.create(name,phone,email)
+        self.user_repository.create(name,phone,email)
+
+    def update(self, id: str, phone: str = None, email: str = None):
+        self.user_repository.update(id, phone, email)
+
+    def all(self):
+        return self.user_repository.all()
+
+    def get(self, id: str):
+        return self.user_repository.get(id)
+    
+    def delete(self, id: str):
+        self.user_repository.delete(id)

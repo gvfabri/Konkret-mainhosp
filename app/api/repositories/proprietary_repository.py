@@ -19,7 +19,7 @@ class ProprietaryRepository:
         proprietary = self.db.query(Proprietary).filter(Proprietary.id == id).first()
         if proprietary:
             return proprietary
-        return f"Proprietário {id} não encontrado!"
+        return False
     
     #Usar firts() ao inves de one(), pois first considera que só terá um item a ser encontrado, como o id é único
     def delete(self, id: str):
@@ -27,6 +27,5 @@ class ProprietaryRepository:
         if proprietary:
             self.db.delete(proprietary)
             self.db.commit()
-            return f"Proprietário {id} deletado."
-        return f"Proprietário {id} não encontrado para deletar!"
-    
+            return True
+        return False

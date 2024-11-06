@@ -21,7 +21,49 @@ def add_user(
     except Exception as e:
         raise HTTPException(status_code=400,detaif=f"Deu erro: {str(e)}")
 
-#post cria, put atualiza e delete deleta
+@router.put("/user/{id}/update")
+def update_user(
+    id: str,
+    phone: Annotated[str, Query()],
+    email: Annotated[str, Query()],
+    user_service: Annotated[UserService, Depends(get_user_service)]
+):
+    try: 
+        updated_user = user_service.update(id, phone, email)
+        if isinstance(updated_user, str):
+            raise HTTPException(status_code=404)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")
+
+@router.get("/user")
+def getall_users(
+    user_service: Annotated[UserService, Depends(get_user_service)]
+):
+    try:
+        return user_service.all()
+    except Exception as e:
+        raise HTTPException(status_code=400,detaif=f"Deu erro: {str(e)}")
+    
+@router.get("/user/{id}")
+def get_user(
+    id: str,
+    user_service: Annotated[UserService, Depends(get_user_service)]
+):
+    try:
+        return user_service.get(id)
+    except Exception as e:
+        raise HTTPException(status_code=400,detaif=f"Deu erro: {str(e)}")
+    
+@router.delete("/user/{id}")
+def delete_user(
+    id: str,
+    user_service: Annotated[UserService, Depends(get_user_service)]
+):
+    try:
+        user_service.delete(id)
+    except Exception as e:
+        raise HTTPException(status_code=400,detaif=f"Deu erro: {str(e)}")
+    
 @router.post("/employee")
 def add_employee(
     name: Annotated[str, Query()],

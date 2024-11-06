@@ -22,8 +22,8 @@ class EmployeeRepository:
                 employee.role = role
             self.db.commit()
             self.db.refresh(employee)
-            return "Dados atualizados com sucesso!", employee
-        return f"{id} não encontrado!"
+            return employee
+        return False
     
     def all(self):
         return self.db.query(Employee).all()
@@ -32,7 +32,7 @@ class EmployeeRepository:
         employee = self.db.query(Employee).filter(Employee.id == id).first()
         if employee:
             return employee
-        return f"Obra {id} não encontrada!"
+        return False
     
     #Usar firts() ao inves de one(), pois first considera que só terá um item a ser encontrado, como o id é único
     def delete(self, id: str):
@@ -40,6 +40,6 @@ class EmployeeRepository:
         if employee:
             self.db.delete(employee)
             self.db.commit()
-            return f"Funcionário {id} deletado."
-        return f"{id} não encontrado!"
+            return True
+        return False
     
