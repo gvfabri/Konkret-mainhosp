@@ -6,3 +6,7 @@ import os
 app = FastAPI()
 
 app.include_router(endpoints.router)
+
+@app.get('/')
+def health_check():
+    return "Ok, its working"
