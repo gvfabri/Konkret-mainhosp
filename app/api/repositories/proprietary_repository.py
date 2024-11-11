@@ -1,4 +1,4 @@
-from ..core.models import Proprietary
+from ..core.models import Proprietary, Work
 from sqlalchemy.orm import Session
 
 class ProprietaryRepository:
@@ -24,7 +24,11 @@ class ProprietaryRepository:
     #Usar firts() ao inves de one(), pois first considera que só terá um item a ser encontrado, como o id é único
     def delete(self, id: str):
         proprietary = self.db.query(Proprietary).filter(Proprietary.id == id).first()
+        works = self.db.query(Work).all()
         if proprietary:
+            for work in works:
+                if proprietary.id in work.proprietaries:
+                    Work.proprietaries.remove(proprietary.id)
             self.db.delete(proprietary)
             self.db.commit()
             return True

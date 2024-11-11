@@ -162,6 +162,50 @@ def remove_photo(
     except Exception as e:
         raise HTTPException(status_code=400,detaif=f"Deu erro: {str(e)}")
     
+@router.put("/work/{id}/addworker")
+def add_worker(
+    id: str,
+    worker: Annotated[str, Query()],
+    work_service: Annotated[WorkService, Depends(get_work_service)]
+):
+    try:
+        work_service.add_worker(id, worker)
+    except Exception as e:
+        raise HTTPException(status_code=400,detaif=f"Deu erro: {str(e)}")
+    
+@router.put("/work/{id}/removeworker")
+def remove_worker(
+    id: str,
+    worker: Annotated[str, Query()],
+    work_service: Annotated[WorkService, Depends(get_work_service)]
+):
+    try:
+        work_service.remove_worker(id, worker)
+    except Exception as e:
+        raise HTTPException(status_code=400,detaif=f"Deu erro: {str(e)}")
+    
+@router.put("/work/{id}/addobservation")
+def add_observation(
+    id: str,
+    observation: Annotated[str, Query()],
+    work_service: Annotated[WorkService, Depends(get_work_service)]
+):
+    try:
+        work_service.add_observation(id, observation)
+    except Exception as e:
+        raise HTTPException(status_code=400,detaif=f"Deu erro: {str(e)}")
+    
+@router.put("/work/{id}/removeobservation")
+def remove_observation(
+    id: str,
+    observation: Annotated[str, Query()],
+    work_service: Annotated[WorkService, Depends(get_work_service)]
+):
+    try:
+        work_service.remove_observation(id, observation)
+    except Exception as e:
+        raise HTTPException(status_code=400,detaif=f"Deu erro: {str(e)}")
+
 @router.get("/work")
 def getall_works(
     work_service: Annotated[WorkService, Depends(get_work_service)]

@@ -13,7 +13,7 @@ class User(Base):
     name = Column(String, nullable=False)
     phone = Column(String, nullable=True)
     email = Column(String, nullable=False, unique=True)
-    password = Column(String, nullable=False)
+    password = Column(String, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
@@ -43,5 +43,8 @@ class Work(Base):
     id = Column(String, primary_key=True, index=True,default=lambda: str(uuid4()))
     address = Column(String, nullable=False)
     photos = Column(ARRAY(String), nullable=True)
+    workers = Column(ARRAY(Employee), ForeignKey("employees.id"), nullable=True, )
+    proprietary = Column(String, ForeignKey("proprietary.id"), nullable=False)
+    observations = Column(ARRAY(Text), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
