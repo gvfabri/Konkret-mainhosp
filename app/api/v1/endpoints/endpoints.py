@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Request, Query, Depends, HTTPException
 from typing import Annotated
+from app.api.repositories.user_repository import is_valid_password  
 import json
 from ...services.user_service import UserService
 from ...services.work_service import WorkService
@@ -9,6 +10,8 @@ from ...dependencies import get_user_service, get_employee_service, get_work_ser
 
 router = APIRouter()
 
+
+
 @router.post("/user")
 def add_user(
     name: Annotated[str, Query()],
@@ -17,10 +20,14 @@ def add_user(
     password: Annotated[str, Query()],
     user_service: Annotated[UserService, Depends(get_user_service)]
 ):
+    password_error = is_valid_password(password)
+    if password_error:
+        raise HTTPException(status_code=400, detail=password_error)
+
     try:
         user = user_service.create_user(name,phone,email, password)
     except Exception as e:
-        raise HTTPException(status_code=400,detaif=f"Deu erro: {str(e)}")
+        raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
 
 @router.put("/user/{id}/update")
 def update_user(
