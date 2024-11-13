@@ -1,4 +1,4 @@
-from ..core.models import User
+from ..core.models import User, Work
 from sqlalchemy.orm import Session
 import bcrypt
 from passlib.context import CryptContext
@@ -47,7 +47,11 @@ class UserRepository:
     
     def delete(self, id: str):
         user = self.db.query(User).filter(User.id == id).first()
+        works = self.db.query(Work).all()
         if user:
+            for work in works:
+                if user.id in work.workers:
+                    Work.workers.remove(user.id)
             self.db.delete(user)
             self.db.commit()
             return True

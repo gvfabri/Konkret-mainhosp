@@ -22,3 +22,15 @@ class WorkService:
     
     def delete(self, id: str):
         self.work_repository.delete(id)
+
+    def add_worker(self, id: str, worker: str):
+        self.work_repository.add_worker(id, worker)
+
+    def remove_worker(self, id: str, worker: str):
+        self.work_repository.remove_worker(id, worker)
+    
+    def add_observation(self, id: str, observation: str):
+        self.work_repository.add_observation(id, observation)
+    
+    def remove_observation(self, id: str, observation: str):
+        self.work_repository.remove_observation(id, observation)
