@@ -1,25 +1,9 @@
-from ..core.models import User, Work
+from app.api.core.models import User, Work
 from sqlalchemy.orm import Session
 import bcrypt
 from passlib.context import CryptContext
 import re
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-Tamanho_min_senha = 8
-
-def is_valid_password(password: str) -> bool:
-    if len(password) < Tamanho_min_senha:
-        return "A senha deve ter pelo menos {Tamanho_min_senha} caracteres."
-    if not re.search(r"[A-Z]", password):
-        return "A senha deve conter pelo menos uma letra maiúscula."
-    if not re.search(r"\d", password):
-        return "A senha deve conter pelo menos um número."
-    if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password):
-        return "A senha deve conter pelo menos um caractere especial."
-    return None
-
-def hash_password(password: str) -> str:
-    return pwd_context.hash(password)
+from app.api.utils import pwd_context
 
 class UserRepository:
     def __init__(self,db: Session):
@@ -48,7 +32,7 @@ class UserRepository:
             self.db.commit()
             self.db.refresh(user)
             return user
-        return False
+        return None
     
     def all(self):
         return self.db.query(User).all()
@@ -57,7 +41,7 @@ class UserRepository:
         user = self.db.query(User).filter(User.id == id).first()
         if user:
             return user
-        return False
+        return None
     
     def delete(self, id: str):
         user = self.db.query(User).filter(User.id == id).first()
@@ -69,4 +53,4 @@ class UserRepository:
             self.db.delete(user)
             self.db.commit()
             return True
-        return False
+        return None
