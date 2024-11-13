@@ -1,4 +1,4 @@
-from ..core.models import User, Work
+from app.api.core.models import User, Work
 from sqlalchemy.orm import Session
 import bcrypt
 
@@ -27,7 +27,7 @@ class UserRepository:
             self.db.commit()
             self.db.refresh(user)
             return user
-        return False
+        return None
     
     def all(self):
         return self.db.query(User).all()
@@ -36,7 +36,7 @@ class UserRepository:
         user = self.db.query(User).filter(User.id == id).first()
         if user:
             return user
-        return False
+        return None
     
     def delete(self, id: str):
         user = self.db.query(User).filter(User.id == id).first()
@@ -48,4 +48,4 @@ class UserRepository:
             self.db.delete(user)
             self.db.commit()
             return True
-        return False
+        return None

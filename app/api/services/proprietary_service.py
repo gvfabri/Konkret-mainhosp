@@ -1,4 +1,4 @@
-from ..repositories.proprietary_repository import ProprietaryRepository
+from app.api.repositories.proprietary_repository import ProprietaryRepository
 from sqlalchemy.orm import Session
 
 class ProprietaryService:

@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 import os
 from pydantic import BaseModel
-from .models import Base
+from app.api.core.models import Base
 
 
 # Pega a URL do banco de dados do arquivo .env
