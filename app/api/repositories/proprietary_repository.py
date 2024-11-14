@@ -31,5 +31,5 @@ class ProprietaryRepository:
                     Work.proprietaries.remove(proprietary.id)
             self.db.delete(proprietary)
             self.db.commit()
-            return True
+            return proprietary
         return None

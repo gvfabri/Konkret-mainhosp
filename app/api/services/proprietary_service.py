@@ -6,7 +6,7 @@ class ProprietaryService:
         self.proprietary_repository = ProprietaryRepository(db)
 
     def create_proprietary(self, name: str, cpf: str):
-        self.proprietary_repository.create_proprietary(name, cpf)
+        return self.proprietary_repository.create_proprietary(name, cpf)
 
     def all(self):
         return self.proprietary_repository.all()
@@ -15,5 +15,5 @@ class ProprietaryService:
         return self.proprietary_repository.get(id)
  
     def delete(self, id: str):
-        self.proprietary_repository.delete(id)
+        return self.proprietary_repository.delete(id)
         
