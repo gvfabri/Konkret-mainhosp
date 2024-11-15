@@ -38,23 +38,27 @@ class WorkRepository:
     def add_photo(self, id: str, photo: str):
         work = self.db.query(Work).filter(Work.id == id).first()
         if work:
-            
+            if work.photos == None:
+                work.photos = []
             work.photos.append(photo)
             flag_modified(work, "photos")
             self.db.commit()
             self.db.refresh(work)
-            return work
+            return work.photos[len(work.photos) - 1]
         return None
     
     def remove_photo(self, id: str, photo: str):
         work = self.db.query(Work).filter(Work.id == id).first()
         if work:
             try:
+                result = None
+                if photo in work.photos:
+                    result= photo
                 work.photos.remove(photo)
                 flag_modified(work, "photos")
                 self.db.commit()
                 self.db.refresh(work)
-                return work
+                return result
             except ValueError:
                 return ValueError(f"Foto {photo} não encontrada!")
         return None
@@ -62,22 +66,27 @@ class WorkRepository:
     def add_observation(self, id: str, observation: str):
         work = self.db.query(Work).filter(Work.id == id).first()
         if work:
+            if work.observations == None:
+                work.observations = []
             work.observations.append(observation)
             flag_modified(work, "observations")
             self.db.commit()
             self.db.refresh(work)
-            return work
+            return work.observations[len(work.observations) -1]
         return None
     
     def remove_observation(self, id: str, observation: str):
         work = self.db.query(Work).filter(Work.id == id).first()
         if work:
             try:
+                result = None
+                if observation in work.observations:
+                    result = observation
                 work.observations.remove(observation)
                 flag_modified(work, "observations")
                 self.db.commit()
                 self.db.refresh(work)
-                return work
+                return result
             except ValueError:
                 return ValueError(f"Observação {observation} não encontrada!")
         return None
@@ -87,5 +96,5 @@ class WorkRepository:
         if work:
             self.db.delete(work)
             self.db.commit()
-            return True
+            return work
         return None

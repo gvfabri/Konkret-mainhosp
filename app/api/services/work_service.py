@@ -6,7 +6,7 @@ class WorkService:
         self.work_repository = WorkRepository(db)
 
     def create_work(self, address: str, photos: list, proprietary_id: str, observations: list):
-        self.work_repository.create(address, photos, proprietary_id, observations)
+        return self.work_repository.create(address, photos, proprietary_id, observations)
 
     def all(self):
         return self.work_repository.all()
@@ -21,16 +21,16 @@ class WorkService:
         return self.work_repository.workers(id)
 
     def add_photo(self, id: str, photo: str):
-        self.work_repository.add_photo(id, photo)
+        return self.work_repository.add_photo(id, photo)
 
     def remove_photo(self, id: str, photo: str):
-        self.work_repository.remove_photo(id, photo)
+        return self.work_repository.remove_photo(id, photo)
     
     def delete(self, id: str):
-        self.work_repository.delete(id)
+        return self.work_repository.delete(id)
     
     def add_observation(self, id: str, observation: str):
-        self.work_repository.add_observation(id, observation)
+        return self.work_repository.add_observation(id, observation)
     
     def remove_observation(self, id: str, observation: str):
-        self.work_repository.remove_observation(id, observation)
+        return self.work_repository.remove_observation(id, observation)
