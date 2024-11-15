@@ -1,8 +1,9 @@
-from fastapi import FastAPI, Depends
-from ..api.v1.endpoints import endpoints
-from dotenv import load_dotenv
-import os
+from fastapi import FastAPI
+from app.api.routers import user, employee, work, proprietary
 
 app = FastAPI()
 
-app.include_router(endpoints.router)
+app.include_router(user.router)
+app.include_router(employee.router)
+app.include_router(work.router)
+app.include_router(proprietary.router)

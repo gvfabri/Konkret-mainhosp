@@ -1,4 +1,4 @@
-from ..repositories.user_repository import UserRepository
+from app.api.repositories.user_repository import UserRepository
 from sqlalchemy.orm import Session
 
 class UserService:
