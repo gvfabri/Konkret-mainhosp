@@ -22,7 +22,7 @@ def add_employee(
 @router.put("/{id}/update", response_model=EmployeePublic)
 def update_employee(
     id: str,
-    employee: EmployeePublic,
+    employee: EmployeeSchema,
     employee_service: Annotated[EmployeeService, Depends(get_employee_service)]
 ):
     try: 
