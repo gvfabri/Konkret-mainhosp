@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, Query
 from typing import Annotated
+from app.api.core.schemas import PhotoPublic, PhotoSchema, WorkPublic, WorkSchema
 from app.api.services.work_service import WorkService
 from app.api.dependencies import get_work_service
 
@@ -9,27 +10,25 @@ router = APIRouter(
 )
 
 
-@router.post("")
+@router.post("", response_model=WorkPublic)
 def add_work(
-    address: Annotated[str, Query()],
-    photos: Annotated[list, Query()],
-    proprietary: Annotated[str, Query()],
-    observations: Annotated[list, Query()],
+    work: WorkSchema,
     work_service: Annotated[WorkService, Depends(get_work_service)]
 ):
     try:
-        return work_service.create_work(address, photos, proprietary, observations)
+        return work_service.create_work(work.address, work.photos, work.id_proprietary, work.observations)
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
     
-@router.put("/{id}/addphoto")
+@router.put("/{id}/addphoto", response_model=PhotoPublic)
 def add_photo(
-    id: str,
-    photo: Annotated[str, Query()],
+    photo: PhotoSchema,
     work_service: Annotated[WorkService, Depends(get_work_service)]
 ):
     try:
-        return work_service.add_photo(id, photo)
+        photo_path = work_service.add_photo(photo.id_work, photo.photo)
+        result = PhotoPublic(photo = photo_path)
+        return result
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
     

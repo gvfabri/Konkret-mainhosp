@@ -38,12 +38,11 @@ class WorkRepository:
     def add_photo(self, id: str, photo: str):
         work = self.db.query(Work).filter(Work.id == id).first()
         if work:
-            
             work.photos.append(photo)
             flag_modified(work, "photos")
             self.db.commit()
             self.db.refresh(work)
-            return work
+            return work.photos[len(work.photos) - 1]
         return None
     
     def remove_photo(self, id: str, photo: str):
@@ -87,5 +86,5 @@ class WorkRepository:
         if work:
             self.db.delete(work)
             self.db.commit()
-            return True
+            return work
         return None

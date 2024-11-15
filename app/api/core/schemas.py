@@ -41,3 +41,21 @@ class UserPublic(BaseModel):
     name: Annotated[str, Query()]
     phone: Annotated[str, Query()] | None
     email: Annotated[str, Query()]
+
+class WorkSchema(BaseModel):
+    address: Annotated[str, Query()]
+    photos: Annotated[Optional[list], Query()]
+    id_proprietary: Annotated[str, Query()]
+    observations: Annotated[Optional[list], Query()]
+
+class WorkPublic(BaseModel):
+    address: Annotated[str, Query()]
+    photos: Annotated[Optional[list], Query()]
+    observations: Annotated[Optional[list], Query()]
+
+class PhotoSchema(BaseModel):
+    id_work: Annotated[str, Query()]
+    photo: Annotated[str, Query()]
+
+class PhotoPublic(BaseModel):
+    photo: Annotated[str, Query()]
