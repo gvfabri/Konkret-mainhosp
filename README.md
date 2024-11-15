@@ -54,6 +54,11 @@ Para abrir a página, primeiro entre na pasta do Frontend
 cd frontend/
 ```
 
+Instale npm
+```bash
+cd npm i
+```
+
 Inicie o Frontend
 ```bash
 npm run dev
