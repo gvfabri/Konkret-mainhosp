@@ -1,6 +1,6 @@
 from fastapi import Query
 from pydantic import BaseModel
-from typing import Annotated
+from typing import Annotated, Optional
 from datetime import datetime
 
 class ProprietarySchema(BaseModel):
@@ -15,3 +15,29 @@ class ProprietaryPublic(BaseModel):
     updated_at: Annotated[datetime,Query()]
     class Config:
         orm_mode = True
+
+class EmployeeSchema(BaseModel):
+    name: Annotated[str, Query()]
+    rg: Annotated[int, Query()]
+    cpf: Annotated[int, Query()]
+    role: Annotated[str, Query()]
+    salary: Annotated[float, Query()]
+    work_id: Annotated[Optional[str], Query(default=None)]
+
+class EmployeePublic(BaseModel):
+    name: Annotated[Optional[str], Query()]
+    id: Annotated[str, Query()]
+    role: Annotated[Optional[str], Query()]
+    salary: Annotated[Optional[float], Query()]
+    work_id: Annotated[Optional[str], Query(default=None)]
+
+class UserSchema(BaseModel):
+    name: Annotated[str, Query()]
+    phone: Annotated[str, Query()] | None
+    email: Annotated[str, Query()]
+    password: Annotated[str, Query()]
+
+class UserPublic(BaseModel):
+    name: Annotated[str, Query()]
+    phone: Annotated[str, Query()] | None
+    email: Annotated[str, Query()]

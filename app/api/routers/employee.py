@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Query, Depends
-from typing import Annotated
+from typing import Annotated, List
 from app.api.services.employee_service import EmployeeService
+from app.api.core.schemas import EmployeeSchema, EmployeePublic
 from app.api.dependencies import get_employee_service
 
 router = APIRouter(
@@ -8,38 +9,31 @@ router = APIRouter(
     tags=["employee"]
 )
 
-@router.post("")
+@router.post("", response_model=EmployeePublic)
 def add_employee(
-    name: Annotated[str, Query()],
-    rg: Annotated[int, Query()],
-    cpf: Annotated[int, Query()],
-    role: Annotated[str, Query()],
-    salary: Annotated[float, Query()],
-    work_id: Annotated[str, Query()],
+    employee: EmployeeSchema,
     employee_service: Annotated[EmployeeService, Depends(get_employee_service)]
 ):    
     try:
-        return employee_service.create_employee(name, rg, cpf, role, salary, work_id)
+        return employee_service.create_employee(employee.name, employee.rg, employee.cpf, employee.role, employee.salary, employee.work_id)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")
     
-@router.put("/{id}/update")
+@router.put("/{id}/update", response_model=EmployeePublic)
 def update_employee(
     id: str,
-    salary: Annotated[float, Query()],
-    role: Annotated[str, Query()],
-    work_id: Annotated[str, Query()],
+    employee: EmployeePublic,
     employee_service: Annotated[EmployeeService, Depends(get_employee_service)]
 ):
     try: 
-        updated_employee = employee_service.update(id, salary, role, work_id)
+        updated_employee = employee_service.update(id, employee.salary, employee.role, employee.work_id)
         if isinstance(updated_employee, str):
             raise HTTPException(status_code=404)
         return updated_employee
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")
     
-@router.get("")
+@router.get("", response_model=List[EmployeePublic])
 def getall_employees(
     employee_service: Annotated[EmployeeService, Depends(get_employee_service)]
 ):
@@ -48,7 +42,7 @@ def getall_employees(
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")
     
-@router.get("/{id}")
+@router.get("/{id}", response_model=EmployeePublic)
 def get_employee(
     id: str,
     employee_service: Annotated[EmployeeService, Depends(get_employee_service)]
@@ -61,7 +55,7 @@ def get_employee(
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")
     
-@router.delete("/{id}")
+@router.delete("/{id}", response_model=EmployeePublic)
 def delete_employee(
     id:str,
     employee_service: Annotated[EmployeeService, Depends(get_employee_service)]
@@ -70,5 +64,6 @@ def delete_employee(
         result = employee_service.delete(id)
         if result is None:
             raise HTTPException(status_code=404, detail=f"ID: '{id}'não encontrado.")
+        return result
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")

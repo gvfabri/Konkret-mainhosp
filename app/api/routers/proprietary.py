@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Query, Depends
+from fastapi import APIRouter, HTTPException, Depends
 from app.api.core.schemas import ProprietarySchema, ProprietaryPublic
 from typing import Annotated, List
 from app.api.services.proprietary_service import ProprietaryService
@@ -11,11 +11,11 @@ router = APIRouter(
 
 @router.post("", response_model=ProprietaryPublic)
 def add_proprietary(
-    user: ProprietarySchema,
+    proprietary: ProprietarySchema,
     proprietary_service: Annotated[ProprietaryService, Depends(get_proprietary_service)]
 ):
     try:
-        return proprietary_service.create_proprietary(user.name,user.cpf)
+        return proprietary_service.create_proprietary(proprietary.name,proprietary.cpf)
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
 

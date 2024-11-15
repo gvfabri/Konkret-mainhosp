@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Request, Query, Depends, HTTPException
 from typing import Annotated
 from app.api.services.user_service import UserService
+from app.api.core.schemas import UserSchema, UserPublic
 from app.api.dependencies import get_user_service
 from app.api.utils import is_valid_password
 
@@ -9,20 +10,18 @@ router = APIRouter(
     tags=["user"]
 )
 
-@router.post("")
+@router.post("", response_model=UserPublic)
 def add_user(
-    name: Annotated[str, Query()],
-    phone: Annotated[str, Query()],
-    email: Annotated[str, Query()],
-    password: Annotated[str, Query()],
+    user: UserSchema,
     user_service: Annotated[UserService, Depends(get_user_service)]
 ):
-    password_error = is_valid_password(password)
+    password_error = is_valid_password(user.password)
     if password_error:
         raise HTTPException(status_code=400, detail=password_error)
 
     try:
-        user = user_service.create_user(name,phone,email, password)
+        return user_service.create_user(user.name,user.phone,user.email, user.password)        
+
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
 
