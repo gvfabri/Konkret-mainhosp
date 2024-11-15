@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import apiClient from '@/api/ApiClient'
 import { register } from 'module'
+import { ArrowLeft } from 'lucide-react'
 
 export const Route = createLazyFileRoute('/signupCPF')({
   component: SignupCPF,
@@ -60,6 +61,10 @@ function SignupCPF() {
           <h1 className="text-3xl font-bold text-blue-600 mb-1">Criar Conta</h1>
           <h2 className="text-xl text-blue-600 mb-6">Física:</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
+          <Button variant="ghost" className="w-10 h-10 p-0 absolute top-4 left-4" onClick={()=>navigation({ to: '/signup'})}>
+            <ArrowLeft className="h-6 w-6 text-white" />
+          </Button>
+            
             <Input
               name="name"
               value={formData.name}

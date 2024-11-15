@@ -177,8 +177,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       query: {
         /** Name */
         name: string;
-        /** Phone */
-        phone: string;
+        /** Cpf */
+        cpf: string;
         /** Email */
         email: string;
         /** Password */
@@ -221,8 +221,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     updateUserUserIdUpdatePut: (
       id: string,
       query: {
-        /** Phone */
-        phone: string;
+        /** Cpf */
+        cpf: string;
         /** Email */
         email: string;
         /** Password */
