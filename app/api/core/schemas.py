@@ -72,3 +72,5 @@ class ObservationSchema(BaseModel):
 
 class ObservationPublic(BaseModel):
     observation: Annotated[str, Query()]
+
+# Gustavo é hacker-man
