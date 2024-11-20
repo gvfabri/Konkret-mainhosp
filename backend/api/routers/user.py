@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Request, Query, Depends, HTTPException
-from typing import Annotated
+from typing import Annotated, List
 from backend.api.services.user_service import UserService
+from backend.api.core.schemas import UserSchema, UserPublic
 from backend.api.dependencies import get_user_service
 from backend.api.utils import is_valid_password
 
@@ -9,40 +10,36 @@ router = APIRouter(
     tags=["user"]
 )
 
-@router.post("")
-async def add_user(
-    name: str,
-    cpf: str,
-    email: str,
-    password: str,
+@router.post("", response_model=UserPublic)
+def add_user(
+    user: UserSchema,
     user_service: Annotated[UserService, Depends(get_user_service)]
 ):
-    password_error = is_valid_password(password)
-    if password_error:
-        raise HTTPException(status_code=400, detail=password_error)
+    # password_error = is_valid_password(user.password)
+    # if password_error:
+    #     raise HTTPException(status_code=400, detail=password_error)
 
     try:
-        user = user_service.create_user(name,cpf,email, password)
+        return user_service.create_user(user.name,user.phone,user.email, user.password)        
+
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
 
-@router.put("/{id}/update")
-async def update_user(
+@router.put("/{id}/update", response_model=UserPublic)
+def update_user(
     id: str,
-    cpf: Annotated[str, Query()],
-    email: Annotated[str, Query()],
-    password: Annotated[str, Query()],
+    user: UserSchema,
     user_service: Annotated[UserService, Depends(get_user_service)]
 ):
     try: 
-        updated_user = user_service.update(id, cpf, email, password)
+        updated_user = user_service.update(id, user.phone, user.email, user.password)
         if isinstance(updated_user, str):
             raise HTTPException(status_code=404)
         return updated_user
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")
 
-@router.get("")
+@router.get("", response_model=List[UserPublic])
 def getall_users(
     user_service: Annotated[UserService, Depends(get_user_service)]
 ):
@@ -51,7 +48,7 @@ def getall_users(
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
     
-@router.get("/{id}")
+@router.get("/{id}", response_model=UserPublic)
 def get_user(
     id: str,
     user_service: Annotated[UserService, Depends(get_user_service)]
@@ -61,12 +58,12 @@ def get_user(
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
     
-@router.delete("/{id}")
+@router.delete("/{id}", response_model=UserPublic)
 def delete_user(
     id: str,
     user_service: Annotated[UserService, Depends(get_user_service)]
 ):
     try:
-        user_service.delete(id)
+        return user_service.delete(id)
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")

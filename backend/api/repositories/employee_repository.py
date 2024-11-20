@@ -5,7 +5,7 @@ class EmployeeRepository:
     def __init__(self,db: Session):
         self.db = db
 
-    def create_employee(self,name: str, rg: int,cpf: int, role: str, salary: float, work_id: str):
+    def create_employee(self,name: str, rg: int,cpf: int, role: str, salary: float, work_id: str | None):
         new_employee = Employee(name=name,rg=rg, cpf=cpf, role=role, salary=salary, work_id=work_id)
         self.db.add(new_employee)
         self.db.commit()
@@ -42,6 +42,6 @@ class EmployeeRepository:
         if employee:
             self.db.delete(employee)
             self.db.commit()
-            return True
+            return employee
         return None
     

@@ -166,3 +166,4 @@ environment/
 .env/
 .venv/
 myenv/
+app/alembic/versions/__pycache__

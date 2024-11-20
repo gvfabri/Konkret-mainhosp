@@ -1,5 +1,6 @@
-from fastapi import APIRouter, HTTPException, Query, Depends
-from typing import Annotated
+from fastapi import APIRouter, HTTPException, Depends
+from backend.api.core.schemas import ProprietarySchema, ProprietaryPublic
+from typing import Annotated, List
 from backend.api.services.proprietary_service import ProprietaryService
 from backend.api.dependencies import get_proprietary_service
 
@@ -8,18 +9,17 @@ router = APIRouter(
     tags=["Proprietary"],
 )
 
-@router.post("")
+@router.post("", response_model=ProprietaryPublic)
 def add_proprietary(
-    name: Annotated[str, Query()],
-    cpf: Annotated[str, Query()],
+    proprietary: ProprietarySchema,
     proprietary_service: Annotated[ProprietaryService, Depends(get_proprietary_service)]
 ):
     try:
-        return proprietary_service.create_proprietary(name,cpf)
+        return proprietary_service.create_proprietary(proprietary.name,proprietary.cpf)
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
 
-@router.get("")
+@router.get("", response_model=List[ProprietaryPublic])
 def getall_proprietaries(
     proprietary_service: Annotated[ProprietaryService, Depends(get_proprietary_service)]
 ):
@@ -28,8 +28,9 @@ def getall_proprietaries(
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")
     
-@router.get("/{id}")
+@router.get("/{id}", response_model=ProprietaryPublic)
 def get_proprietary(
+    id: str,
     proprietary_service: Annotated[ProprietaryService, Depends(get_proprietary_service)]
 ):
     try:
@@ -40,7 +41,7 @@ def get_proprietary(
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")
     
-@router.delete("/{id}")
+@router.delete("/{id}", response_model=ProprietaryPublic)
 def delete_proprietary(
     id:str,
     proprietary_service: Annotated[ProprietaryService, Depends(get_proprietary_service)]
@@ -49,5 +50,6 @@ def delete_proprietary(
         result = proprietary_service.delete(id)
         if result is None:
             raise HTTPException(status_code=404, detail=f"ID: '{id}'não encontrado.")
+        return result
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")

@@ -52,5 +52,5 @@ class UserRepository:
                     Work.workers.remove(user.id)
             self.db.delete(user)
             self.db.commit()
-            return True
+            return user
         return None
