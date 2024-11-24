@@ -33,13 +33,13 @@ class EmployeePublic(BaseModel):
 
 class UserSchema(BaseModel):
     name: Annotated[str, Query()]
-    phone: Annotated[str, Query()] | None
+    cpf: Annotated[str, Query()] | None
     email: Annotated[str, Query()]
     password: Annotated[str, Query()]
 
 class UserPublic(BaseModel):
     name: Annotated[str, Query()]
-    phone: Annotated[str, Query()] | None
+    cpf: Annotated[str, Query()] | None
     email: Annotated[str, Query()]
 
 class WorkSchema(BaseModel):

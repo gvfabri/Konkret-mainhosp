@@ -20,7 +20,7 @@ def add_user(
     #     raise HTTPException(status_code=400, detail=password_error)
 
     try:
-        return user_service.create_user(user.name,user.phone,user.email, user.password)        
+        return user_service.create_user(user.name,user.cpf,user.email, user.password)        
 
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")

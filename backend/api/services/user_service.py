@@ -6,10 +6,10 @@ class UserService:
         self.user_repository = UserRepository(db)
 
     def create_user(self,name: str,cpf: str,email: str, password: str):
-        self.user_repository.create(name,cpf,email, password)
+        return self.user_repository.create(name,cpf,email, password)
 
     def update(self, id: str, cpf: str = None, email: str = None, password: str = None):
-        self.user_repository.update(id, cpf, email, password)
+        return self.user_repository.update(id, cpf, email, password)
 
     def all(self):
         return self.user_repository.all()
