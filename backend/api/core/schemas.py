@@ -42,6 +42,10 @@ class UserPublic(BaseModel):
     cpf: Annotated[str, Query()] | None
     email: Annotated[str, Query()]
 
+class LoginSchema(BaseModel):
+    email: str
+    password: str
+
 class WorkSchema(BaseModel):
     address: Annotated[str, Query()]
     photos: Annotated[Optional[list], Query()]

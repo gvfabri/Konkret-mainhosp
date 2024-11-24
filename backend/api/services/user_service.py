@@ -19,3 +19,6 @@ class UserService:
     
     def delete(self, id: str):
         self.user_repository.delete(id)
+
+    def find_by_email(self, email_or_cpf: str):
+        return self.user_repository.find_by_email(email_or_cpf)
