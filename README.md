@@ -1,7 +1,6 @@
 # Konkret
 
-Konkret é um aplicativo que serve como um diário de pedreiro, auxiliando o eng. civil
-no seu trabalho cotidiano.
+Konkret é um aplicativo que serve como um diário de pedreiro, auxiliando o eng. civil no seu trabalho cotidiano.
 
 ## Instalação
 
@@ -10,32 +9,30 @@ no seu trabalho cotidiano.
 git clone https://github.com/ES2024Konkret/Konkret-main
 ```
 
-2. Crie um ambiente
+## Pré requisitos
+
+1. **Instale o gerenciador de pacotes uv**: 
+rode as seguintes linhas no terminal
 ```bash
-python -m venv env
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-3. Ative o ambiente
+## Ativação
+
+1. Dê up no container
 ```bash
-source env/bin/activate
+docker compose up --build
 ```
 
-4. Instale os requerimentos
+2. atualize as dependencies
 ```bash
-pip install -r requirements.txt
+uv sync
 ```
 
-5. Execute o container
+3. Atualize as bases de dados
 ```bash
-docker compose up
+uv run alembic upgrade head
 ```
-
-6. Execute o alembic
-```bash
-alembic upgrade head
-```
-
-7. Está pronto para usar!
 
 ## Uso
 
