@@ -10,7 +10,7 @@ class UserRepository:
         self.db = db
 
     def create(self,name: str,cpf: str,email: str, password: str):
-        
+        cpf = re.sub(r'[^0-9]', '', cpf)
         hashed_password = pwd_context.hash(password)
         new_user = User(name=name,cpf=cpf,email=email, password=hashed_password)
         self.db.add(new_user)
@@ -54,3 +54,6 @@ class UserRepository:
             self.db.commit()
             return user
         return None
+    
+    def find_by_email(self, email: str):
+        return self.db.query(User).filter(User.email == email).first()
