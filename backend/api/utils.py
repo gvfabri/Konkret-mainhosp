@@ -23,6 +23,8 @@ def hash_password(password: str) -> str:
 def get_coordinates(address: str):
     geolocator = Nominatim(user_agent="Konkret")
     loc = geolocator.geocode(address)
+    if loc is None:
+        return None
     return [loc.latitude, loc.longitude]
 
 def get_weather(lat: float, lon: float):

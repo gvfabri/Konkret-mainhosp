@@ -126,16 +126,18 @@ class WorkRepository:
         if work:
             loc = work.address
             coordinates = get_coordinates(loc)
-            weather = get_weather(coordinates[0], coordinates[1])
-            #return weather
-            return [{
-                'descrição': weather["weather"][0]["description"],
-                'temperatura': f'{weather["main"]["temp"]:.2f}ºC',
-                'pressão': f'{weather["main"]["pressure"]} hPa',
-                'umidade': f'{weather["main"]["humidity"]}%',
-                'velocidade do vento': f'{weather["wind"]["speed"]}m/s',
-                'visibilidade': f'{weather["visibility"]}m'
-            }]
+            if coordinates:
+                weather = get_weather(coordinates[0], coordinates[1])
+                return [{
+                    'Descrição': weather["weather"][0]["description"],
+                    'Temperatura': f'{weather["main"]["temp"]:.2f}ºC',
+                    'Pressão': f'{weather["main"]["pressure"]} hPa',
+                    'Umidade': f'{weather["main"]["humidity"]}%',
+                    'Velocidade do vento': f'{weather["wind"]["speed"]}m/s',
+                    'Visibilidade': f'{weather["visibility"]}m'
+                }]
+            else:
+                return "Endereço não encontrado"
         return None
     
     def delete(self, id: str):
