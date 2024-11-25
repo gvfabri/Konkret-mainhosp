@@ -5,8 +5,8 @@ class WorkService:
     def __init__(self, db: Session):
         self.work_repository = WorkRepository(db)
 
-    def create_work(self, address: str, photos: list, proprietary_id: str, observations: list):
-        return self.work_repository.create(address, photos, proprietary_id, observations)
+    def create_work(self, address: str, photos: list, proprietary_id: str, observations: list, activities: list):
+        return self.work_repository.create(address, photos, proprietary_id, observations, activities)
 
     def all(self):
         return self.work_repository.all()
@@ -34,3 +34,12 @@ class WorkService:
     
     def remove_observation(self, id: str, observation: str):
         return self.work_repository.remove_observation(id, observation)
+    
+    def add_activity(self, id: str, activity: str):
+        return self.work_repository.add_activity(id, activity)
+    
+    def remove_activity(self, id: str, activity: str):
+        return self.work_repository.remove_activity(id, activity)
+    
+    def get_climate(self, id: str):
+        return self.work_repository.climate(id)

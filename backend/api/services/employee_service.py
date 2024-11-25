@@ -5,7 +5,7 @@ class EmployeeService:
     def __init__(self, db: Session):
         self.employee_repository = EmployeeRepository(db)
 
-    def create_employee(self, name: str, rg: int, cpf: int, role: str, salary: float, work_id: str):
+    def create_employee(self, name: str, rg: int, cpf: int, role: str, salary: float, work_id: str | None):
         return self.employee_repository.create_employee(name,rg,cpf,role,salary,work_id)
 
     def all(self):

@@ -1,6 +1,10 @@
 from passlib.context import CryptContext
 import re
+
+from geopy.geocoders import Nominatim
+import requests
 import bcrypt
+
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 Tamanho_min_senha = 8
@@ -19,7 +23,19 @@ def is_valid_password(password: str) -> bool:
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
 
-def is_valid_cpf(cpf: str) -> bool:
+def get_coordinates(address: str):
+    geolocator = Nominatim(user_agent="Konkret")
+    loc = geolocator.geocode(address)
+    if loc is None:
+        return None
+    return [loc.latitude, loc.longitude]
+
+def get_weather(lat: float, lon: float):
+    url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={"b1c7ce8cfdef7802eafd6a2189e8edfb"}&lang=pt_br&units=metric"
+    response = requests.get(url)
+    return response.json()
+  
+  def is_valid_cpf(cpf: str) -> bool:
     cpf = re.sub(r'\D', '', cpf)
     if len(cpf) != 11 or not cpf.isdigit():
         return False
@@ -43,3 +59,4 @@ def verificar_senha(senha: str, hash_senha: str) -> bool:
 
 def normalizar_cpf(cpf: str) -> str:
     return re.sub(r'[^0-9]', '', cpf)
+

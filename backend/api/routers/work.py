@@ -1,9 +1,11 @@
 from fastapi import APIRouter, HTTPException, Depends, Query
 from typing import Annotated, List
 from backend.api.core.schemas import (PhotoPublic, PhotoSchema, WorkPublic, WorkSchema, ObservationPublic, 
-                                  ObservationSchema, ProprietaryPublic, EmployeePublic)
+                                  ObservationSchema, ProprietaryPublic, EmployeePublic, ActivityPublic, ActivitySchema, ClimatePublic, ClimateSchema)
 from backend.api.services.work_service import WorkService
 from backend.api.dependencies import get_work_service
+import pandas as pd
+from fastapi.responses import StreamingResponse
 
 router = APIRouter(
     prefix="/work",
@@ -25,7 +27,7 @@ def add_work(
     work_service: Annotated[WorkService, Depends(get_work_service)]
 ):
     try:
-        return work_service.create_work(work.address, work.photos, work.id_proprietary, work.observations)
+        return work_service.create_work(work.address, work.photos, work.id_proprietary, work.observations, work.activities)
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
     
@@ -84,6 +86,25 @@ def remove_observation(
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
 
+@router.put("/{id}/addactivity", response_model=ActivityPublic)
+def add_activity(
+    activity: ActivitySchema,
+    work_service: Annotated[WorkService, Depends(get_work_service)]
+):
+    try:
+        return ActivityPublic(activity= work_service.add_activity(activity.id_work, activity.activity))
+    except Exception as e:
+        raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
+
+@router.put("/{id}/removeactivity", response_model=ActivityPublic)
+def remove_activity(
+    activity: ActivitySchema,
+    work_service: Annotated[WorkService, Depends(get_work_service)]
+):
+    try:
+        return ActivityPublic(activity= work_service.remove_activity(activity.id_work, activity.activity))
+    except Exception as e:
+        raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
 
 @router.get("/{id}", response_model=WorkPublic)
 def get_work(
@@ -115,3 +136,59 @@ def get_workers(
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
     
+@router.get("/{id}/climate")
+def get_climate(
+    id: str,
+    work_service: Annotated[WorkService, Depends(get_work_service)]
+):
+    try:
+        return work_service.get_climate(id)
+    except Exception as e:
+        raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
+    
+@router.get("/csv/")
+def getall_csv(
+    work_service: Annotated[WorkService, Depends(get_work_service)]
+):
+    try:
+        works = work_service.all()
+        data = []
+        for work in works:
+            workers = work_service.workers(work.id)
+            weather = work_service.get_climate(work.id)
+            data.append({
+                "ID": work.id,
+                "Endereço": work.address,
+                "Proprietário": work.proprietary.name,
+                "Empregados": [worker.name for worker in workers],
+                "Observações": work.observations,
+                "Atividades": work.activities,
+                "Clima": weather
+            })
+        df = pd.DataFrame(data)
+        return StreamingResponse(df.to_csv(index=False), media_type="text/csv", headers={"Content-Disposition": "attachment; filename=works.csv"})
+    except Exception as e:
+        raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
+    
+@router.get("/{id}/csv")
+def get_csv(
+    id: str,
+    work_service: Annotated[WorkService, Depends(get_work_service)]
+):
+    try:
+        work = work_service.get(id)
+        workers = work_service.workers(id)
+        weather = work_service.get_climate(id)
+        data = [{
+            "ID": work.id,
+            "Endereço": work.address,
+            "Proprietário": work.proprietary.name,
+            "Empregados": [worker.name for worker in workers],
+            "Observações": work.observations,
+            "Atividades": work.activities,
+            "Clima": weather
+        }]
+        df = pd.DataFrame(data)
+        return StreamingResponse(df.to_csv(index=False), media_type="text/csv", headers={"Content-Disposition": "attachment; filename=work.csv"})
+    except Exception as e:
+        raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")

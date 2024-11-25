@@ -1,13 +1,15 @@
 from backend.api.core.models import Work
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.attributes import flag_modified
+from backend.api.utils import get_coordinates
+from backend.api.utils import get_weather
 
 class WorkRepository:
     def __init__(self,db: Session):
         self.db = db
 
-    def create(self, address: str, photos: list, proprietary_id: str, observations: list):
-        new_work = Work(address=address,photos=photos,proprietary_id=proprietary_id,observations=observations)
+    def create(self, address: str, photos: list, proprietary_id: str, observations: list, activities: list):
+        new_work = Work(address=address,photos=photos,proprietary_id=proprietary_id,observations=observations, activities=activities)
         self.db.add(new_work)
         self.db.commit()
         self.db.refresh(new_work)
@@ -89,6 +91,53 @@ class WorkRepository:
                 return result
             except ValueError:
                 return ValueError(f"Observação {observation} não encontrada!")
+        return None
+    
+    def add_activity(self, id: str, activity: str):
+        work = self.db.query(Work).filter(Work.id == id).first()
+        if work:
+            if work.activities == None:
+                work.activities = []
+            work.activities.append(activity)
+            flag_modified(work, "activities")
+            self.db.commit()
+            self.db.refresh(work)
+            return work.activities[len(work.activities) - 1]
+        return None
+    
+    def remove_activity(self, id: str, activity: str):
+        work = self.db.query(Work).filter(Work.id == id).first()
+        if work:
+            try:
+                result = None
+                if activity in work.activities:
+                    result = activity
+                work.activities.remove(activity)
+                flag_modified(work, "activities")
+                self.db.commit()
+                self.db.refresh(work)
+                return result
+            except ValueError:
+                return ValueError(f"Atividade {activity} não encontrada!")
+        return None
+    
+    def climate(self, id: str):
+        work = self.db.query(Work).filter(Work.id == id).first()
+        if work:
+            loc = work.address
+            coordinates = get_coordinates(loc)
+            if coordinates:
+                weather = get_weather(coordinates[0], coordinates[1])
+                return [{
+                    'Descrição': weather["weather"][0]["description"],
+                    'Temperatura': f'{weather["main"]["temp"]:.2f}ºC',
+                    'Pressão': f'{weather["main"]["pressure"]} hPa',
+                    'Umidade': f'{weather["main"]["humidity"]}%',
+                    'Velocidade do vento': f'{weather["wind"]["speed"]}m/s',
+                    'Visibilidade': f'{weather["visibility"]}m'
+                }]
+            else:
+                return "Endereço não encontrado"
         return None
     
     def delete(self, id: str):
