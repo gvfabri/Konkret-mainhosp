@@ -35,7 +35,7 @@ def get_weather(lat: float, lon: float):
     response = requests.get(url)
     return response.json()
   
-  def is_valid_cpf(cpf: str) -> bool:
+def is_valid_cpf(cpf: str) -> bool:
     cpf = re.sub(r'\D', '', cpf)
     if len(cpf) != 11 or not cpf.isdigit():
         return False
