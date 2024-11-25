@@ -1,7 +1,6 @@
-import * as React from 'react'
 import { Button } from '@/components/ui/button'
 import { createLazyFileRoute, useNavigate } from '@tanstack/react-router'
-import { ArrowLeft, Home } from 'lucide-react'
+import { ArrowLeft} from 'lucide-react'
 
 export const Route = createLazyFileRoute('/signup')({
   component: SignupOptions,

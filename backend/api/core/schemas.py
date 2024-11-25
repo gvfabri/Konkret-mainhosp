@@ -17,10 +17,10 @@ class ProprietaryPublic(BaseModel):
         orm_mode = True
 
 class EmployeeSchema(BaseModel):
-    name: Annotated[str, Query()]
+    name: Annotated[Optional[str], Query()]
     rg: Annotated[int, Query()]
     cpf: Annotated[int, Query()]
-    role: Annotated[str, Query()]
+    role: Annotated[Optional[str], Query()]
     salary: Annotated[float, Query()]
     work_id: Annotated[Optional[str], Query(default=None)]
 
@@ -47,6 +47,7 @@ class WorkSchema(BaseModel):
     photos: Annotated[Optional[list], Query()]
     id_proprietary: Annotated[str, Query()]
     observations: Annotated[Optional[list], Query()]
+    activities: Annotated[Optional[list], Query()]
 
 class WorkPublic(BaseModel):
     address: Annotated[str, Query()]
@@ -54,6 +55,7 @@ class WorkPublic(BaseModel):
     observations: Annotated[Optional[list], Query()]
     id: Annotated[str, Query()]
     proprietary_id: Annotated[str, Query()]
+    activities: Annotated[Optional[list], Query()]
     created_at: Annotated[datetime,Query()]
     updated_at: Annotated[datetime,Query()]
     class Config:
@@ -73,4 +75,20 @@ class ObservationSchema(BaseModel):
 class ObservationPublic(BaseModel):
     observation: Annotated[str, Query()]
 
+class ActivitySchema(BaseModel):
+    id_work: Annotated[str, Query()]
+    activity: Annotated[str, Query()]
+
+class ActivityPublic(BaseModel):
+    activity: Annotated[str, Query()]
+
+class ClimateSchema(BaseModel):
+    id_work: Annotated[str, Query()]
+
+class ClimatePublic(BaseModel):
+    temperature: Annotated[float, Query()]
+    pressure: Annotated[float, Query()]
+    humidity: Annotated[float, Query()]
+    wind_speed: Annotated[float, Query()]
+    visibility: Annotated[float, Query()]
 # Gustavo é hacker-man

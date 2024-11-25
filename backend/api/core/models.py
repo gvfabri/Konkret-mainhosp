@@ -51,5 +51,6 @@ class Work(Base):
     proprietary = relationship("Proprietary", back_populates="works")
     observations = mapped_column(ARRAY(Text), nullable=True)
     workers = relationship("Employee", back_populates="work")
+    activities = mapped_column(ARRAY(String), nullable=True)
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())

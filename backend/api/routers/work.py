@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends, Query
 from typing import Annotated, List
 from backend.api.core.schemas import (PhotoPublic, PhotoSchema, WorkPublic, WorkSchema, ObservationPublic, 
-                                  ObservationSchema, ProprietaryPublic, EmployeePublic)
+                                  ObservationSchema, ProprietaryPublic, EmployeePublic, ActivityPublic, ActivitySchema, ClimatePublic, ClimateSchema)
 from backend.api.services.work_service import WorkService
 from backend.api.dependencies import get_work_service
 
@@ -25,7 +25,7 @@ def add_work(
     work_service: Annotated[WorkService, Depends(get_work_service)]
 ):
     try:
-        return work_service.create_work(work.address, work.photos, work.id_proprietary, work.observations)
+        return work_service.create_work(work.address, work.photos, work.id_proprietary, work.observations, work.activities)
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
     
@@ -84,6 +84,25 @@ def remove_observation(
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
 
+@router.put("/{id}/addactivity", response_model=ActivityPublic)
+def add_activity(
+    activity: ActivitySchema,
+    work_service: Annotated[WorkService, Depends(get_work_service)]
+):
+    try:
+        return ActivityPublic(activity= work_service.add_activity(activity.id_work, activity.activity))
+    except Exception as e:
+        raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
+
+@router.put("/{id}/removeactivity", response_model=ActivityPublic)
+def remove_activity(
+    activity: ActivitySchema,
+    work_service: Annotated[WorkService, Depends(get_work_service)]
+):
+    try:
+        return ActivityPublic(activity= work_service.remove_activity(activity.id_work, activity.activity))
+    except Exception as e:
+        raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
 
 @router.get("/{id}", response_model=WorkPublic)
 def get_work(
@@ -112,6 +131,16 @@ def get_workers(
 ):
     try:
         return work_service.workers(id)
+    except Exception as e:
+        raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
+    
+@router.get("/{id}/climate")
+def get_climate(
+    id: str,
+    work_service: Annotated[WorkService, Depends(get_work_service)]
+):
+    try:
+        return work_service.get_climate(id)
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
     

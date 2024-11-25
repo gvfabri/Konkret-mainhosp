@@ -3,7 +3,6 @@ import { createLazyFileRoute, useNavigate } from '@tanstack/react-router'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import apiClient from '@/api/ApiClient'
-import { register } from 'module'
 import { ArrowLeft } from 'lucide-react'
 
 export const Route = createLazyFileRoute('/signupCPF')({
@@ -31,24 +30,30 @@ function SignupCPF() {
 
     async function registerUser() {
 
-      await apiClient.user.addUserUserPost({
-        name: formData.name,
-        cpf: formData.cpf,
-        email: formData.email,
-        password: formData.password
-      }).then(response => {
-        setFormData({
-          name: '',
-          cpf: '',
-          email: '',
-          password: '',
-          confirmPassword: '',
+      if (formData.password !== formData.confirmPassword) {
+
+        await apiClient.user.addUserUserPost({
+          name: formData.name,
+          cpf: formData.cpf,
+          email: formData.email,
+          password: formData.password
+        }).then(response => {
+          setFormData({
+            name: '',
+            cpf: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
+          })
+          console.log(response.data)
+          navigation({ to: '/'})
+        }).catch(error => {
+          console.log(error)
         })
-        console.log(response.data)
-        navigation({ to: '/'})
-      }).catch(error => {
-        console.log(error)
-      })
+      }
+      else {
+        console.log('As senhas não são iguais')
+      }
     }
 
   return (
