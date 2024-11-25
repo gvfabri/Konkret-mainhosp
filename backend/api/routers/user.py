@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Request, Query, Depends, HTTPException
 from typing import Annotated, List
 from backend.api.services.user_service import UserService
-from backend.api.core.schemas import UserSchema, UserPublic
+from backend.api.core.schemas import UserSchema, UserPublic, LoginSchema
 from backend.api.dependencies import get_user_service
-from backend.api.utils import is_valid_password
+from backend.api.utils import is_valid_password, is_valid_cpf, verificar_senha
 
 router = APIRouter(
     prefix="/user",
@@ -15,12 +15,16 @@ def add_user(
     user: UserSchema,
     user_service: Annotated[UserService, Depends(get_user_service)]
 ):
-    # password_error = is_valid_password(user.password)
-    # if password_error:
-    #     raise HTTPException(status_code=400, detail=password_error)
+    password_error = is_valid_password(user.password)
+    if password_error:
+        raise HTTPException(status_code=400, detail=password_error)
+    
+    # Valida o CPF
+    if not is_valid_cpf(user.cpf):
+        raise HTTPException(status_code=400, detail="CPF inválido.")
 
     try:
-        return user_service.create_user(user.name,user.phone,user.email, user.password)        
+        return user_service.create_user(user.name,user.cpf,user.email, user.password)        
 
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
@@ -67,3 +71,18 @@ def delete_user(
         return user_service.delete(id)
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
+    
+@router.post("/login")
+def login(
+    credentials: LoginSchema,
+    user_service: Annotated[UserService, Depends(get_user_service)]
+):
+    # Tenta buscar o usuário pelo e-mail ou CPF
+    user = user_service.find_by_email(credentials.email)
+    if not user:
+        raise HTTPException(status_code=401, detail="Credenciais inválidas.")
+
+    # Verifica se a senha está correta
+    if not verificar_senha(credentials.password, user.password):
+        raise HTTPException(status_code=401, detail="Credenciais inválidas.")
+
