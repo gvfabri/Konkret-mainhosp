@@ -205,12 +205,12 @@ def get_pdf(
     work_service: Annotated[WorkService, Depends(get_work_service)]
 ):
     try:
-        # Obter os dados
+        
         work = work_service.get(id)
         workers = work_service.workers(id)
         weather = work_service.get_climate(id)
 
-        # Criar os dados estruturados em um DataFrame
+        
         data = [{
             "ID": work.id,
             "Endereço": work.address,
@@ -221,26 +221,25 @@ def get_pdf(
             "Clima": weather
         }]
         
-        # Criar o PDF
+      
         pdf = FPDF()
         pdf.set_auto_page_break(auto=True, margin=15)
         pdf.add_page()
         pdf.set_font("Arial", size=12)
 
-        # Adicionar título ao PDF
+       
         pdf.set_font("Arial", style="B", size=16)
         pdf.cell(200, 10, txt=f"Relatório do Trabalho ID: {id}", ln=True, align="C")
         pdf.ln(10)  # Espaço entre título e conteúdo
 
-        # Adicionar os dados do DataFrame ao PDF
+        
         pdf.set_font("Arial", size=12)
         for col in data[0].keys():
             pdf.cell(0, 10, txt=f"{col}: {data[0][col]}", ln=True)
 
-        # Gerar o PDF em formato de bytes diretamente
+       
         pdf_output = pdf.output(dest='S').encode('latin1')  # 'S' gera o PDF como bytes
 
-        # Retornar o PDF como resposta
         return Response(
             content=pdf_output,
             media_type="application/pdf",
