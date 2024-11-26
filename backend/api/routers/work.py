@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, Query
+from fastapi import APIRouter, HTTPException, Depends, Query, Response
 from typing import Annotated, List
 from backend.api.core.schemas import (PhotoPublic, PhotoSchema, WorkPublic, WorkSchema, ObservationPublic, 
                                   ObservationSchema, ProprietaryPublic, EmployeePublic, ActivityPublic, ActivitySchema, ClimatePublic, ClimateSchema)
@@ -6,6 +6,8 @@ from backend.api.services.work_service import WorkService
 from backend.api.dependencies import get_work_service
 import pandas as pd
 from fastapi.responses import StreamingResponse
+from fpdf import FPDF
+
 
 router = APIRouter(
     prefix="/work",
@@ -189,6 +191,61 @@ def get_csv(
             "Clima": weather
         }]
         df = pd.DataFrame(data)
-        return StreamingResponse(df.to_csv(index=False), media_type="text/csv", headers={"Content-Disposition": "attachment; filename=work.csv"})
+        return StreamingResponse(
+            df.to_csv(index=False), 
+            media_type="text/csv", 
+            headers={"Content-Disposition": "attachment; filename=work.csv"})
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
+    
+    
+@router.get("/{id}/pdf")
+def get_pdf(
+    id: str,
+    work_service: Annotated[WorkService, Depends(get_work_service)]
+):
+    try:
+        # Obter os dados
+        work = work_service.get(id)
+        workers = work_service.workers(id)
+        weather = work_service.get_climate(id)
+
+        # Criar os dados estruturados em um DataFrame
+        data = [{
+            "ID": work.id,
+            "Endereço": work.address,
+            "Proprietário": work.proprietary.name,
+            "Empregados": ", ".join(worker.name for worker in workers),
+            "Observações": ", ".join(work.observations),
+            "Atividades": ", ".join(work.activities),
+            "Clima": weather
+        }]
+        
+        # Criar o PDF
+        pdf = FPDF()
+        pdf.set_auto_page_break(auto=True, margin=15)
+        pdf.add_page()
+        pdf.set_font("Arial", size=12)
+
+        # Adicionar título ao PDF
+        pdf.set_font("Arial", style="B", size=16)
+        pdf.cell(200, 10, txt=f"Relatório do Trabalho ID: {id}", ln=True, align="C")
+        pdf.ln(10)  # Espaço entre título e conteúdo
+
+        # Adicionar os dados do DataFrame ao PDF
+        pdf.set_font("Arial", size=12)
+        for col in data[0].keys():
+            pdf.cell(0, 10, txt=f"{col}: {data[0][col]}", ln=True)
+
+        # Gerar o PDF em formato de bytes diretamente
+        pdf_output = pdf.output(dest='S').encode('latin1')  # 'S' gera o PDF como bytes
+
+        # Retornar o PDF como resposta
+        return Response(
+            content=pdf_output,
+            media_type="application/pdf",
+            headers={"Content-Disposition": f"attachment; filename=work_{id}.pdf"}
+        )
+
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Erro ao gerar o PDF: {str(e)}")
