@@ -95,4 +95,3 @@ class ClimatePublic(BaseModel):
     humidity: Annotated[float, Query()]
     wind_speed: Annotated[float, Query()]
     visibility: Annotated[float, Query()]
-# Gustavo é hacker-man
