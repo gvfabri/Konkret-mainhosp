@@ -85,4 +85,4 @@ def login(
     # Verifica se a senha está correta
     if not verificar_senha(credentials.password, user.password):
         raise HTTPException(status_code=401, detail="Credenciais inválidas.")
-
+    return "Usuário aceito para ser logado"

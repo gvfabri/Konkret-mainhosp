@@ -43,7 +43,7 @@ docker exec -it konkret-main-db-1 psql -U postgres -d postgres_db
 
 Então use o uvicorn para rodar um server local
 ```bash
-uvicorn backend.api.main:app
+uv run uvicorn backend.api.main:app
 ```
 
 Para abrir a página, primeiro entre na pasta do Frontend
