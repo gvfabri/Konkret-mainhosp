@@ -3,7 +3,7 @@ from typing import Annotated, List
 from backend.api.services.user_service import UserService
 from backend.api.core.schemas import UserSchema, UserPublic, LoginSchema
 from backend.api.dependencies import get_user_service
-from backend.api.utils import is_valid_password, is_valid_cpf, verificar_senha
+from backend.api.utils import is_valid_password, is_valid_cpf, is_valid_cnpj, verificar_senha
 
 router = APIRouter(
     prefix="/user",
@@ -19,12 +19,14 @@ def add_user(
     if password_error:
         raise HTTPException(status_code=400, detail=password_error)
     
-    # Valida o CPF
-    if not is_valid_cpf(user.cpf):
+    if user.user_type.value == "PF" and not is_valid_cpf(user.cpf):
         raise HTTPException(status_code=400, detail="CPF inválido.")
+    
+    if user.user_type.value == "PJ" and not is_valid_cnpj(user.cnpj):
+        raise HTTPException(status_code=400, detail="CNPJ inválido.")
 
     try:
-        return user_service.create_user(user.name,user.cpf,user.email, user.password)        
+        return user_service.create_user(user.name, user.email, user.password, user.user_type, user.cpf, user.cnpj)        
 
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
@@ -35,8 +37,18 @@ def update_user(
     user: UserSchema,
     user_service: Annotated[UserService, Depends(get_user_service)]
 ):
+    password_error = is_valid_password(user.password)
+    if password_error:
+        raise HTTPException(status_code=400, detail=password_error)
+    
+    if user.user_type.value == "PF" and not is_valid_cpf(user.cpf):
+        raise HTTPException(status_code=400, detail="CPF inválido.")
+    
+    if user.user_type.value == "PJ" and not is_valid_cnpj(user.cnpj):
+        raise HTTPException(status_code=400, detail="CNPJ inválido.")
+    
     try: 
-        updated_user = user_service.update(id, user.phone, user.email, user.password)
+        updated_user = user_service.update(id, user.name, user.email, user.password, user.user_type, user.cpf, user.cnpj)
         if isinstance(updated_user, str):
             raise HTTPException(status_code=404)
         return updated_user
@@ -67,8 +79,14 @@ def delete_user(
     id: str,
     user_service: Annotated[UserService, Depends(get_user_service)]
 ):
+   
+
     try:
-        return user_service.delete(id)
+        deleted_user = user_service.delete(id)
+        # Verifica se o usuário foi encontrado e excluído corretamente
+        if deleted_user is None:
+            raise HTTPException(status_code=404, detail="Usuário não encontrado")
+        return delete_user
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
     

@@ -1,19 +1,26 @@
-from sqlalchemy import Table, Column, String, Float, Integer, Text, ForeignKey, DateTime, func, JSON
+from sqlalchemy import Table, Column, String, Float, Integer, Text, ForeignKey, DateTime, Enum,func, JSON
 from sqlalchemy.orm import relationship, declarative_base, mapped_column, Mapped
 from uuid import uuid4
 from sqlalchemy.dialects.postgresql import ARRAY
 import enum
+from enum import Enum as PyEnum
 
 Base = declarative_base()
+
+class UserType(PyEnum):
+    PF = "PF"
+    PJ = "PJ"
 
 class User(Base):
     __tablename__ = "users"
 
-    id: Mapped[String] = mapped_column(String, primary_key=True, index=True,default=lambda: str(uuid4()))
+    id: Mapped[String] = mapped_column(String, primary_key=True, index=True, default=lambda: str(uuid4()))
     name = mapped_column(String, nullable=False)
-    cpf = mapped_column(String, nullable=True)
+    cpf = mapped_column(String, nullable=True, unique=True)
+    cnpj = mapped_column(String, nullable=True, unique=True)
     email = mapped_column(String, nullable=False, unique=True)
-    password = mapped_column(String, nullable=True)
+    password = mapped_column(String, nullable=False)
+    user_type = mapped_column(Enum(UserType, name="user_type_enum"), nullable=False)  
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 

@@ -42,6 +42,30 @@ def is_valid_cpf(cpf: str) -> bool:
         return False
     return True
 
+def is_valid_cnpj(cnpj: str) -> bool:
+    cnpj = re.sub(r'\D', '', cnpj)
+
+    if len(cnpj) != 14:
+        return False
+
+    if cnpj == cnpj[0] * len(cnpj):
+        return False
+
+    pesos_1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
+    soma = sum(int(cnpj[i]) * pesos_1[i] for i in range(12))
+    digito_1 = 11 - (soma % 11)
+    digito_1 = digito_1 if digito_1 < 10 else 0
+
+    if int(cnpj[12]) != digito_1:
+        return False
+
+    pesos_2 = [6] + pesos_1
+    soma = sum(int(cnpj[i]) * pesos_2[i] for i in range(13))
+    digito_2 = 11 - (soma % 11)
+    digito_2 = digito_2 if digito_2 < 10 else 0
+
+    return int(cnpj[13]) == digito_2
+
 def verificar_senha(senha: str, hash_senha: str) -> bool:
     return bcrypt.checkpw(senha.encode('utf-8'), hash_senha.encode('utf-8'))
 
