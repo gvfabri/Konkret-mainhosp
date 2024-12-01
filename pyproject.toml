@@ -32,4 +32,5 @@ dependencies = [
     "requests>=2.32.3",
     "fpdf>=1.7.2",
     "fpdf2>=2.8.1",
+    "biblioteca>=0.0.1a2",
 ]

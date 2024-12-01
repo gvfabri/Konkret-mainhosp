@@ -1,7 +1,8 @@
 from fastapi import Query
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Annotated, Optional
 from datetime import datetime
+from enum import Enum
 
 class ProprietarySchema(BaseModel):
     name: Annotated[str, Query()]
@@ -31,15 +32,23 @@ class EmployeePublic(BaseModel):
     salary: Annotated[Optional[float], Query()]
     work_id: Annotated[Optional[str], Query(default=None)]
 
+class UserType(Enum):
+    PF = "PF"
+    PJ = "PJ"
+
 class UserSchema(BaseModel):
     name: Annotated[str, Query()]
-    cpf: Annotated[str, Query()] | None
     email: Annotated[str, Query()]
     password: Annotated[str, Query()]
+    user_type: Annotated[UserType, Query()]
+    cpf: Annotated[Optional[str], Query()] | None
+    cnpj: Annotated[Optional[str], Query()] | None
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 class UserPublic(BaseModel):
     name: Annotated[str, Query()]
     cpf: Annotated[str, Query()] | None
+    cnpj: Annotated[str, Query()] | None
     email: Annotated[str, Query()]
 
 class LoginSchema(BaseModel):

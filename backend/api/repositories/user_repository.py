@@ -1,34 +1,60 @@
-from backend.api.core.models import User, Work
+from backend.api.core.models import User, Work, UserType
 from sqlalchemy.orm import Session
 import bcrypt
 from passlib.context import CryptContext
 import re
 from backend.api.utils import pwd_context
+from typing import Optional
 
 class UserRepository:
     def __init__(self,db: Session):
         self.db = db
-
-    def create(self,name: str,cpf: str,email: str, password: str):
+    
+    def create(self, name: str, email: str, password: str, user_type: str, cpf: Optional[str], cnpj: Optional[str]):
         cpf = re.sub(r'[^0-9]', '', cpf)
+        cnpj = re.sub(r'[^0-9]', '', cnpj)
         hashed_password = pwd_context.hash(password)
-        new_user = User(name=name,cpf=cpf,email=email, password=hashed_password)
+        new_user = User(   
+    name=name,
+    email=email,
+    password=hashed_password,
+    user_type=user_type.value,
+    cpf=cpf if user_type.value == "PF" else None,
+    cnpj=cnpj if user_type.value == "PJ" else None,
+    )
         self.db.add(new_user)
         self.db.commit()
         self.db.refresh(new_user)
         return new_user 
     
-    def update(self, id: str, cpf: str = None, email: str = None,  password: str = None):
+    def update(self, id: str, name: str, email: str = None, password: str = None,user_type: str = None,cpf: str = None, cnpj: str = None):
         user = self.db.query(User).filter(User.id == id).first()
         if user:
-            if cpf is not None:
-                user.cpf = cpf
+            if user_type is not None:
+                if user_type.value not in ["PF", "PJ"]:
+                    raise ValueError("Tipo de usuário inválido. Deve ser 'PF' ou 'PJ'.") 
+                user.user_type = user_type.value
+            if user_type == "PF" or user.user_type == "PF":
+                if cpf is not None:
+                    user.cpf = cpf
+                user.cnpj = None  
+
+            if user_type == "PJ" or user.user_type == "PJ":
+                if cnpj is not None:
+                    user.cnpj = cnpj
+                user.cpf = None  
+
+
             if email is not None:
                 user.email = email
+
+            if name is not None:
+                user.name = name
+
             if password is not None:
-            # Gera um hash para o password
                 hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
                 user.password = hashed_password
+
             self.db.commit()
             self.db.refresh(user)
             return user

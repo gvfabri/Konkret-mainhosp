@@ -72,6 +72,12 @@ wheels = [
 ]
 
 [[package]]
+name = "biblioteca"
+version = "0.0.1a2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/b9/f9/863faaa480337cb979c78415c3dfb946672b48ab5bb806a71efcf7a30d1e/biblioteca-0.0.1a2.tar.gz", hash = "sha256:eed6f4368970574154d01b640688832283ad49ed84fec9219bf45dc62def6943", size = 6049 }
+
+[[package]]
 name = "certifi"
 version = "2024.8.30"
 source = { registry = "https://pypi.org/simple" }
@@ -321,6 +327,7 @@ dependencies = [
     { name = "annotated-types" },
     { name = "anyio" },
     { name = "bcrypt" },
+    { name = "biblioteca" },
     { name = "click" },
     { name = "fastapi" },
     { name = "fpdf" },
@@ -352,6 +359,7 @@ requires-dist = [
     { name = "annotated-types", specifier = ">=0.7.0" },
     { name = "anyio", specifier = ">=4.6.2.post1" },
     { name = "bcrypt", specifier = ">=4.2.1" },
+    { name = "biblioteca", specifier = ">=0.0.1a2" },
     { name = "click", specifier = ">=8.1.7" },
     { name = "fastapi", specifier = ">=0.115.5" },
     { name = "fpdf", specifier = ">=1.7.2" },
