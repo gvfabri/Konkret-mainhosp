@@ -86,7 +86,7 @@ def delete_user(
         # Verifica se o usuário foi encontrado e excluído corretamente
         if deleted_user is None:
             raise HTTPException(status_code=404, detail="Usuário não encontrado")
-        return delete_user
+        return deleted_user
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
     
