@@ -48,7 +48,7 @@ def add_photo(
     report_service: Annotated[ReportService, Depends(get_report_service)]
 ):
     try:
-        photo_path = report_service.add_photo(photo.id_report, photo.photo)
+        photo_path = report_service.add_photo(photo.report_id, photo.photo)
         result = PhotoPublic(photo = photo_path)
         return result
     except Exception as e:
@@ -60,7 +60,7 @@ def remove_photo(
     report_service: Annotated[ReportService, Depends(get_report_service)]
 ):
     try:
-        photo_path = report_service.remove_photo(photo.id_report, photo.photo)
+        photo_path = report_service.remove_photo(photo.report_id, photo.photo)
         return PhotoPublic(photo = photo_path)
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
@@ -71,7 +71,7 @@ def add_observation(
     report_service: Annotated[ReportService, Depends(get_report_service)]
 ):
     try:
-        result = report_service.add_observation(observation.id_report, observation.observation)
+        result = report_service.add_observation(observation.report_id, observation.observation)
         return ObservationPublic(observation= result)
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
@@ -82,7 +82,7 @@ def remove_observation(
     report_service: Annotated[ReportService, Depends(get_report_service)]
 ):
     try:
-        return ObservationPublic(observation= report_service.remove_observation(observation.id_report, observation.observation))
+        return ObservationPublic(observation= report_service.remove_observation(observation.report_id, observation.observation))
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
 
@@ -92,7 +92,7 @@ def add_activity(
     report_service: Annotated[ReportService, Depends(get_report_service)]
 ):
     try:
-        return ActivityPublic(activity= report_service.add_activity(activity.id_report, activity.activity))
+        return ActivityPublic(activity= report_service.add_activity(activity.report_id, activity.activity))
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
 
@@ -102,7 +102,7 @@ def remove_activity(
     report_service: Annotated[ReportService, Depends(get_report_service)]
 ):
     try:
-        return ActivityPublic(activity= report_service.remove_activity(activity.id_report, activity.activity))
+        return ActivityPublic(activity= report_service.remove_activity(activity.report_id, activity.activity))
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
 

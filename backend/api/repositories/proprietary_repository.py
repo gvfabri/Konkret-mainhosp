@@ -33,3 +33,9 @@ class ProprietaryRepository:
             self.db.commit()
             return proprietary
         return None
+    
+    def works(self, id: str):
+        proprietary = self.db.query(Proprietary).filter(Proprietary.id == id).first()
+        if proprietary:
+            return proprietary.works
+        return None

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, Query, Depends, HTTPException
 from typing import Annotated, List
 from backend.api.services.work_service import WorkService
-from backend.api.core.schemas import WorkSchema, WorkPublic, EmployeePublic
+from backend.api.core.schemas import WorkSchema, WorkPublic, EmployeePublic, ReportPublic
 from backend.api.dependencies import get_work_service
 
 router = APIRouter(
@@ -80,7 +80,7 @@ def get_proprietary(
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
     
-@router.get("/{id}/reports", response_model=List[WorkPublic])
+@router.get("/{id}/reports", response_model=List[ReportPublic])
 def get_reports(
     id: str,
     work_service: Annotated[WorkService, Depends(get_work_service)]

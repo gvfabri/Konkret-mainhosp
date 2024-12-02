@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
-from backend.api.core.schemas import ProprietarySchema, ProprietaryPublic
+from backend.api.core.schemas import ProprietarySchema, ProprietaryPublic, WorkPublic
 from typing import Annotated, List
 from backend.api.services.proprietary_service import ProprietaryService
 from backend.api.dependencies import get_proprietary_service
@@ -38,6 +38,19 @@ def get_proprietary(
         if proprietary is None:
             raise HTTPException(status_code=404, detail=f"ID: '{id}'não encontrado.")
         return proprietary
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")
+    
+@router.get("/{id}/works", response_model=List[WorkPublic])
+def get_works(
+    id: str,
+    proprietary_service: Annotated[ProprietaryService, Depends(get_proprietary_service)]
+):
+    try:
+        works = proprietary_service.works(id)
+        if works is None:
+            raise HTTPException(status_code=404, detail=f"ID: '{id}'não encontrado.")
+        return works
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")
     
