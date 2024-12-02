@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Request, Query, Depends, HTTPException
+from fastapi import APIRouter, Request, Query, Depends, HTTPException, Form
 from typing import Annotated, List
 from backend.api.services.user_service import UserService
 from backend.api.core.schemas import UserSchema, UserPublic, LoginSchema
-from backend.api.dependencies import get_user_service
-from backend.api.utils import is_valid_password, is_valid_cpf, is_valid_cnpj, verificar_senha
+from backend.api.dependencies import get_user_service, get_current_user
+from backend.api.utils import is_valid_password, is_valid_cpf, is_valid_cnpj, verify_password, create_token, encode
+from backend.api.core.models import User
 
 router = APIRouter(
     prefix="/user",
@@ -35,8 +36,11 @@ def add_user(
 def update_user(
     id: str,
     user: UserSchema,
-    user_service: Annotated[UserService, Depends(get_user_service)]
+    user_service: Annotated[UserService, Depends(get_user_service)],
+    user_logged: User = Depends(get_current_user)
 ):
+    if not user_logged:
+        raise HTTPException(status_code=404, detail="Usuário logado não encontrado.")
     password_error = is_valid_password(user.password)
     if password_error:
         raise HTTPException(status_code=400, detail=password_error)
@@ -57,8 +61,11 @@ def update_user(
 
 @router.get("", response_model=List[UserPublic])
 def getall_users(
-    user_service: Annotated[UserService, Depends(get_user_service)]
+    user_service: Annotated[UserService, Depends(get_user_service)],
+    user_logged: User = Depends(get_current_user)
 ):
+    if not user_logged:
+        raise HTTPException(status_code=404, detail="Usuário logado não encontrado.")
     try:
         return user_service.all()
     except Exception as e:
@@ -67,8 +74,11 @@ def getall_users(
 @router.get("/{id}", response_model=UserPublic)
 def get_user(
     id: str,
-    user_service: Annotated[UserService, Depends(get_user_service)]
+    user_service: Annotated[UserService, Depends(get_user_service)],
+    user_logged: User = Depends(get_current_user)
 ):
+    if not user_logged:
+        raise HTTPException(status_code=404, detail="Usuário logado não encontrado.")
     try:
         return user_service.get(id)
     except Exception as e:
@@ -77,10 +87,11 @@ def get_user(
 @router.delete("/{id}", response_model=UserPublic)
 def delete_user(
     id: str,
-    user_service: Annotated[UserService, Depends(get_user_service)]
+    user_service: Annotated[UserService, Depends(get_user_service)],
+    user_logged: User = Depends(get_current_user)
 ):
-   
-
+    if not user_logged:
+        raise HTTPException(status_code=404, detail="Usuário logado não encontrado.")
     try:
         deleted_user = user_service.delete(id)
         # Verifica se o usuário foi encontrado e excluído corretamente
@@ -90,17 +101,21 @@ def delete_user(
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
     
-@router.post("/login")
+@router.post("/login", response_model=dict)
 def login(
-    credentials: LoginSchema,
-    user_service: Annotated[UserService, Depends(get_user_service)]
+    user_service: Annotated[UserService, Depends(get_user_service)],
+    username: str = Form(...), 
+    password: str = Form(...),
+    
 ):
-    # Tenta buscar o usuário pelo e-mail ou CPF
-    user = user_service.find_by_email(credentials.email)
-    if not user:
-        raise HTTPException(status_code=401, detail="Credenciais inválidas.")
-
-    # Verifica se a senha está correta
-    if not verificar_senha(credentials.password, user.password):
-        raise HTTPException(status_code=401, detail="Credenciais inválidas.")
-    return "Usuário aceito para ser logado"
+    user = user_service.find_by_email(username)
+    if user is None:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado.")
+    
+    if not verify_password(password, user.password):
+        raise HTTPException(status_code=400, detail="Senha inválida.")
+    
+    return {
+        'access_token': create_token(user.id),
+        'token_type': 'bearer'
+    }

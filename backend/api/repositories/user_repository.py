@@ -7,7 +7,7 @@ from backend.api.utils import pwd_context
 from typing import Optional
 
 class UserRepository:
-    def __init__(self,db: Session):
+    def __init__(self, db: Session):
         self.db = db
     
     def create(self, name: str, email: str, password: str, user_type: str, cpf: Optional[str], cnpj: Optional[str]):
@@ -82,4 +82,7 @@ class UserRepository:
         return None
     
     def find_by_email(self, email: str):
-        return self.db.query(User).filter(User.email == email).first()
+        user = self.db.query(User).filter(User.email == email).first()
+        if user:
+            return user
+        return None

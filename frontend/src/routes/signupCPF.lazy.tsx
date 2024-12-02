@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import apiClient from '@/api/ApiClient'
 import { ArrowLeft } from 'lucide-react'
+import { UserType } from '@/api/Api'
 
 export const Route = createLazyFileRoute('/signupCPF')({
   component: SignupCPF,
@@ -35,6 +36,8 @@ function SignupCPF() {
         await apiClient.user.addUserUserPost({
           name: formData.name,
           cpf: formData.cpf,
+          cnpj: '',
+          user_type: UserType.PF,
           email: formData.email,
           password: formData.password
         }).then(response => {

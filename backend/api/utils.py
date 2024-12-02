@@ -1,9 +1,17 @@
+import os
+from jose import jwt
+from typing import Any, Union
 from passlib.context import CryptContext
 import re
 from geopy.geocoders import Nominatim
 import requests
 import bcrypt
+import datetime as dt
+from dateutil import tz
 
+SECRET_KEY = os.getenv("SECRET_KEY" , 'b1c7ce8cfdef7802eafd6a2189e8edfb')
+ALGORITHM = os.getenv("JWT_ALGORITHM", 'HS512')
+ACCESS_TOKEN_EXPIRE_HOURS = 24
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 Tamanho_min_senha = 8
@@ -22,7 +30,9 @@ def is_valid_password(password: str) -> bool:
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
 
-  
+def encode(text: str) -> str:
+    return bcrypt.hashpw(text.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
 def is_valid_cpf(cpf: str) -> bool:
     cpf = re.sub(r'\D', '', cpf)
     if len(cpf) != 11 or not cpf.isdigit():
@@ -66,11 +76,16 @@ def is_valid_cnpj(cnpj: str) -> bool:
 
     return int(cnpj[13]) == digito_2
 
-def verificar_senha(senha: str, hash_senha: str) -> bool:
+def verify_password(senha: str, hash_senha: str) -> bool:
     return bcrypt.checkpw(senha.encode('utf-8'), hash_senha.encode('utf-8'))
 
-def normalizar_cpf(cpf: str) -> str:
+def cpf_normalize(cpf: str) -> str:
     return re.sub(r'[^0-9]', '', cpf)
+
+def create_token(subject: Union[str, Any]) ->  str:
+    expire = dt.datetime.now(dt.timezone.utc) + dt.timedelta(hours=ACCESS_TOKEN_EXPIRE_HOURS)
+    to_encode = {"exp": expire, "sub": str(subject)}
+    return jwt.encode(to_encode, SECRET_KEY, algorithm="HS512")
 
 def get_coordinates(address: str):
     geolocator = Nominatim(user_agent="Konkret")

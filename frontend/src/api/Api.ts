@@ -9,10 +9,185 @@
  * ---------------------------------------------------------------
  */
 
+/** ActivityPublic */
+export interface ActivityPublic {
+  /** Activity */
+  activity: string;
+}
+
+/** ActivitySchema */
+export interface ActivitySchema {
+  /** Report Id */
+  report_id: string;
+  /** Activity */
+  activity: string;
+}
+
+/** EmployeePublic */
+export interface EmployeePublic {
+  /** Name */
+  name: string | null;
+  /** Id */
+  id: string;
+  /** Role */
+  role: string | null;
+  /** Salary */
+  salary: number | null;
+  /** Work Id */
+  work_id?: string | null;
+}
+
+/** EmployeeSchema */
+export interface EmployeeSchema {
+  /** Name */
+  name: string | null;
+  /** Rg */
+  rg: number;
+  /** Cpf */
+  cpf: number;
+  /** Role */
+  role: string | null;
+  /** Salary */
+  salary: number;
+  /** Work Id */
+  work_id?: string | null;
+}
+
 /** HTTPValidationError */
 export interface HTTPValidationError {
   /** Detail */
   detail?: ValidationError[];
+}
+
+/** LoginSchema */
+export interface LoginSchema {
+  /** Email */
+  email: string;
+  /** Password */
+  password: string;
+}
+
+/** ObservationPublic */
+export interface ObservationPublic {
+  /** Observation */
+  observation: string;
+}
+
+/** ObservationSchema */
+export interface ObservationSchema {
+  /** Report Id */
+  report_id: string;
+  /** Observation */
+  observation: string;
+}
+
+/** PhotoPublic */
+export interface PhotoPublic {
+  /** Photo */
+  photo: string;
+}
+
+/** PhotoSchema */
+export interface PhotoSchema {
+  /** Report Id */
+  report_id: string;
+  /** Photo */
+  photo: string;
+}
+
+/** ProprietaryPublic */
+export interface ProprietaryPublic {
+  /** Name */
+  name: string;
+  /** Id */
+  id: string;
+  /**
+   * Created At
+   * @format date-time
+   */
+  created_at: string;
+  /**
+   * Updated At
+   * @format date-time
+   */
+  updated_at: string;
+}
+
+/** ProprietarySchema */
+export interface ProprietarySchema {
+  /** Name */
+  name: string;
+  /** Cpf */
+  cpf: string;
+}
+
+/** ReportPublic */
+export interface ReportPublic {
+  /** Id */
+  id: string;
+  /** Work Id */
+  work_id: string;
+  /** Photos */
+  photos: any[] | null;
+  /** Observations */
+  observations: any[] | null;
+  /** Activities */
+  activities: any[] | null;
+  /**
+   * Created At
+   * @format date-time
+   */
+  created_at: string;
+  /**
+   * Updated At
+   * @format date-time
+   */
+  updated_at: string;
+}
+
+/** ReportSchema */
+export interface ReportSchema {
+  /** Work Id */
+  work_id: string;
+  /** Photos */
+  photos: any[] | null;
+  /** Observations */
+  observations: any[] | null;
+  /** Activities */
+  activities: any[] | null;
+}
+
+/** UserPublic */
+export interface UserPublic {
+  /** Name */
+  name: string;
+  /** Cpf */
+  cpf: string | null;
+  /** Cnpj */
+  cnpj: string | null;
+  /** Email */
+  email: string;
+}
+
+/** UserSchema */
+export interface UserSchema {
+  /** Name */
+  name: string;
+  /** Email */
+  email: string;
+  /** Password */
+  password: string;
+  user_type: UserType;
+  /** Cpf */
+  cpf: string | null;
+  /** Cnpj */
+  cnpj: string | null;
+}
+
+/** UserType */
+export enum UserType {
+  PF = "PF",
+  PJ = "PJ",
 }
 
 /** ValidationError */
@@ -23,6 +198,34 @@ export interface ValidationError {
   msg: string;
   /** Error Type */
   type: string;
+}
+
+/** WorkPublic */
+export interface WorkPublic {
+  /** Id */
+  id: string;
+  /** Address */
+  address: string;
+  /** Proprietary Id */
+  proprietary_id: string;
+  /**
+   * Created At
+   * @format date-time
+   */
+  created_at: string;
+  /**
+   * Updated At
+   * @format date-time
+   */
+  updated_at: string;
+}
+
+/** WorkSchema */
+export interface WorkSchema {
+  /** Proprietary Id */
+  proprietary_id: string;
+  /** Address */
+  address: string;
 }
 
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType } from "axios";
@@ -169,27 +372,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags user
-     * @name AddUserUserPost
-     * @summary Add User
-     * @request POST:/user
+     * @name GetallUsersUserGet
+     * @summary Getall Users
+     * @request GET:/user
      */
-    addUserUserPost: (
-      query: {
-        /** Name */
-        name: string;
-        /** Cpf */
-        cpf: string;
-        /** Email */
-        email: string;
-        /** Password */
-        password: string;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<any, HTTPValidationError>({
+    getallUsersUserGet: (params: RequestParams = {}) =>
+      this.request<UserPublic[], any>({
         path: `/user`,
-        method: "POST",
-        query: query,
+        method: "GET",
         format: "json",
         ...params,
       }),
@@ -198,14 +388,16 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags user
-     * @name GetallUsersUserGet
-     * @summary Getall Users
-     * @request GET:/user
+     * @name AddUserUserPost
+     * @summary Add User
+     * @request POST:/user
      */
-    getallUsersUserGet: (params: RequestParams = {}) =>
-      this.request<any, any>({
+    addUserUserPost: (data: UserSchema, params: RequestParams = {}) =>
+      this.request<UserPublic, HTTPValidationError>({
         path: `/user`,
-        method: "GET",
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),
@@ -218,22 +410,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary Update User
      * @request PUT:/user/{id}/update
      */
-    updateUserUserIdUpdatePut: (
-      id: string,
-      query: {
-        /** Cpf */
-        cpf: string;
-        /** Email */
-        email: string;
-        /** Password */
-        password: string;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<any, HTTPValidationError>({
+    updateUserUserIdUpdatePut: (id: string, data: UserSchema, params: RequestParams = {}) =>
+      this.request<UserPublic, HTTPValidationError>({
         path: `/user/${id}/update`,
         method: "PUT",
-        query: query,
+        body: data,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),
@@ -247,7 +429,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/user/{id}
      */
     getUserUserIdGet: (id: string, params: RequestParams = {}) =>
-      this.request<any, HTTPValidationError>({
+      this.request<UserPublic, HTTPValidationError>({
         path: `/user/${id}`,
         method: "GET",
         format: "json",
@@ -263,9 +445,27 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request DELETE:/user/{id}
      */
     deleteUserUserIdDelete: (id: string, params: RequestParams = {}) =>
-      this.request<any, HTTPValidationError>({
+      this.request<UserPublic, HTTPValidationError>({
         path: `/user/${id}`,
         method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags user
+     * @name LoginUserLoginPost
+     * @summary Login
+     * @request POST:/user/login
+     */
+    loginUserLoginPost: (data: LoginSchema, params: RequestParams = {}) =>
+      this.request<any, HTTPValidationError>({
+        path: `/user/login`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),
@@ -275,31 +475,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags employee
-     * @name AddEmployeeEmployeePost
-     * @summary Add Employee
-     * @request POST:/employee
+     * @name GetallEmployeesEmployeeGet
+     * @summary Getall Employees
+     * @request GET:/employee
      */
-    addEmployeeEmployeePost: (
-      query: {
-        /** Name */
-        name: string;
-        /** Rg */
-        rg: number;
-        /** Cpf */
-        cpf: number;
-        /** Role */
-        role: string;
-        /** Salary */
-        salary: number;
-        /** Work Id */
-        work_id: string;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<any, HTTPValidationError>({
+    getallEmployeesEmployeeGet: (params: RequestParams = {}) =>
+      this.request<EmployeePublic[], any>({
         path: `/employee`,
-        method: "POST",
-        query: query,
+        method: "GET",
         format: "json",
         ...params,
       }),
@@ -308,14 +491,16 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags employee
-     * @name GetallEmployeesEmployeeGet
-     * @summary Getall Employees
-     * @request GET:/employee
+     * @name AddEmployeeEmployeePost
+     * @summary Add Employee
+     * @request POST:/employee
      */
-    getallEmployeesEmployeeGet: (params: RequestParams = {}) =>
-      this.request<any, any>({
+    addEmployeeEmployeePost: (data: EmployeeSchema, params: RequestParams = {}) =>
+      this.request<EmployeePublic, HTTPValidationError>({
         path: `/employee`,
-        method: "GET",
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),
@@ -328,22 +513,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary Update Employee
      * @request PUT:/employee/{id}/update
      */
-    updateEmployeeEmployeeIdUpdatePut: (
-      id: string,
-      query: {
-        /** Salary */
-        salary: number;
-        /** Role */
-        role: string;
-        /** Work Id */
-        work_id: string;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<any, HTTPValidationError>({
+    updateEmployeeEmployeeIdUpdatePut: (id: string, data: EmployeeSchema, params: RequestParams = {}) =>
+      this.request<EmployeePublic, HTTPValidationError>({
         path: `/employee/${id}/update`,
         method: "PUT",
-        query: query,
+        body: data,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),
@@ -357,7 +532,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/employee/{id}
      */
     getEmployeeEmployeeIdGet: (id: string, params: RequestParams = {}) =>
-      this.request<any, HTTPValidationError>({
+      this.request<EmployeePublic, HTTPValidationError>({
         path: `/employee/${id}`,
         method: "GET",
         format: "json",
@@ -373,39 +548,44 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request DELETE:/employee/{id}
      */
     deleteEmployeeEmployeeIdDelete: (id: string, params: RequestParams = {}) =>
-      this.request<any, HTTPValidationError>({
+      this.request<EmployeePublic, HTTPValidationError>({
         path: `/employee/${id}`,
         method: "DELETE",
         format: "json",
         ...params,
       }),
   };
-  work = {
+  report = {
     /**
      * No description
      *
-     * @tags work
-     * @name AddWorkWorkPost
-     * @summary Add Work
-     * @request POST:/work
+     * @tags report
+     * @name GetallReportsReportGet
+     * @summary Getall Reports
+     * @request GET:/report
      */
-    addWorkWorkPost: (
-      query: {
-        /** Address */
-        address: string;
-        /** Photos */
-        photos: any[];
-        /** Proprietary */
-        proprietary: string;
-        /** Observations */
-        observations: any[];
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<any, HTTPValidationError>({
-        path: `/work`,
+    getallReportsReportGet: (params: RequestParams = {}) =>
+      this.request<ReportPublic[], any>({
+        path: `/report`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags report
+     * @name AddReportReportPost
+     * @summary Add Report
+     * @request POST:/report
+     */
+    addReportReportPost: (data: ReportSchema, params: RequestParams = {}) =>
+      this.request<ReportPublic, HTTPValidationError>({
+        path: `/report`,
         method: "POST",
-        query: query,
+        body: data,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),
@@ -413,142 +593,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags work
-     * @name GetallWorksWorkGet
-     * @summary Getall Works
-     * @request GET:/work
+     * @tags report
+     * @name DeleteReportReportIdDelete
+     * @summary Delete Report
+     * @request DELETE:/report/{id}
      */
-    getallWorksWorkGet: (params: RequestParams = {}) =>
-      this.request<any, any>({
-        path: `/work`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags work
-     * @name AddPhotoWorkIdAddphotoPut
-     * @summary Add Photo
-     * @request PUT:/work/{id}/addphoto
-     */
-    addPhotoWorkIdAddphotoPut: (
-      id: string,
-      query: {
-        /** Photo */
-        photo: string;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<any, HTTPValidationError>({
-        path: `/work/${id}/addphoto`,
-        method: "PUT",
-        query: query,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags work
-     * @name RemovePhotoWorkIdRemovephotoPut
-     * @summary Remove Photo
-     * @request PUT:/work/{id}/removephoto
-     */
-    removePhotoWorkIdRemovephotoPut: (
-      id: string,
-      query: {
-        /** Photo */
-        photo: string;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<any, HTTPValidationError>({
-        path: `/work/${id}/removephoto`,
-        method: "PUT",
-        query: query,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags work
-     * @name AddObservationWorkIdAddobservationPut
-     * @summary Add Observation
-     * @request PUT:/work/{id}/addobservation
-     */
-    addObservationWorkIdAddobservationPut: (
-      id: string,
-      query: {
-        /** Observation */
-        observation: string;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<any, HTTPValidationError>({
-        path: `/work/${id}/addobservation`,
-        method: "PUT",
-        query: query,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags work
-     * @name RemoveObservationWorkIdRemoveobservationPut
-     * @summary Remove Observation
-     * @request PUT:/work/{id}/removeobservation
-     */
-    removeObservationWorkIdRemoveobservationPut: (
-      id: string,
-      query: {
-        /** Observation */
-        observation: string;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<any, HTTPValidationError>({
-        path: `/work/${id}/removeobservation`,
-        method: "PUT",
-        query: query,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags work
-     * @name GetWorkWorkIdGet
-     * @summary Get Work
-     * @request GET:/work/{id}
-     */
-    getWorkWorkIdGet: (id: string, params: RequestParams = {}) =>
-      this.request<any, HTTPValidationError>({
-        path: `/work/${id}`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags work
-     * @name DeleteWorkWorkIdDelete
-     * @summary Delete Work
-     * @request DELETE:/work/{id}
-     */
-    deleteWorkWorkIdDelete: (id: string, params: RequestParams = {}) =>
-      this.request<any, HTTPValidationError>({
-        path: `/work/${id}`,
+    deleteReportReportIdDelete: (id: string, params: RequestParams = {}) =>
+      this.request<ReportPublic, HTTPValidationError>({
+        path: `/report/${id}`,
         method: "DELETE",
         format: "json",
         ...params,
@@ -557,14 +609,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags work
-     * @name GetProprietaryWorkIdProprietaryGet
-     * @summary Get Proprietary
-     * @request GET:/work/{id}/proprietary
+     * @tags report
+     * @name GetReportReportIdGet
+     * @summary Get Report
+     * @request GET:/report/{id}
      */
-    getProprietaryWorkIdProprietaryGet: (id: string, params: RequestParams = {}) =>
-      this.request<any, HTTPValidationError>({
-        path: `/work/${id}/proprietary`,
+    getReportReportIdGet: (id: string, params: RequestParams = {}) =>
+      this.request<ReportPublic, HTTPValidationError>({
+        path: `/report/${id}`,
         method: "GET",
         format: "json",
         ...params,
@@ -573,14 +625,170 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags work
-     * @name GetWorkersWorkIdWorkersGet
-     * @summary Get Workers
-     * @request GET:/work/{id}/workers
+     * @tags report
+     * @name AddPhotoReportIdAddphotoPut
+     * @summary Add Photo
+     * @request PUT:/report/{id}/addphoto
      */
-    getWorkersWorkIdWorkersGet: (id: string, params: RequestParams = {}) =>
+    addPhotoReportIdAddphotoPut: (id: string, data: PhotoSchema, params: RequestParams = {}) =>
+      this.request<PhotoPublic, HTTPValidationError>({
+        path: `/report/${id}/addphoto`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags report
+     * @name RemovePhotoReportIdRemovephotoPut
+     * @summary Remove Photo
+     * @request PUT:/report/{id}/removephoto
+     */
+    removePhotoReportIdRemovephotoPut: (id: string, data: PhotoSchema, params: RequestParams = {}) =>
+      this.request<PhotoPublic, HTTPValidationError>({
+        path: `/report/${id}/removephoto`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags report
+     * @name AddObservationReportIdAddobservationPut
+     * @summary Add Observation
+     * @request PUT:/report/{id}/addobservation
+     */
+    addObservationReportIdAddobservationPut: (id: string, data: ObservationSchema, params: RequestParams = {}) =>
+      this.request<ObservationPublic, HTTPValidationError>({
+        path: `/report/${id}/addobservation`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags report
+     * @name RemoveObservationReportIdRemoveobservationPut
+     * @summary Remove Observation
+     * @request PUT:/report/{id}/removeobservation
+     */
+    removeObservationReportIdRemoveobservationPut: (id: string, data: ObservationSchema, params: RequestParams = {}) =>
+      this.request<ObservationPublic, HTTPValidationError>({
+        path: `/report/${id}/removeobservation`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags report
+     * @name AddActivityReportIdAddactivityPut
+     * @summary Add Activity
+     * @request PUT:/report/{id}/addactivity
+     */
+    addActivityReportIdAddactivityPut: (id: string, data: ActivitySchema, params: RequestParams = {}) =>
+      this.request<ActivityPublic, HTTPValidationError>({
+        path: `/report/${id}/addactivity`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags report
+     * @name RemoveActivityReportIdRemoveactivityPut
+     * @summary Remove Activity
+     * @request PUT:/report/{id}/removeactivity
+     */
+    removeActivityReportIdRemoveactivityPut: (id: string, data: ActivitySchema, params: RequestParams = {}) =>
+      this.request<ActivityPublic, HTTPValidationError>({
+        path: `/report/${id}/removeactivity`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags report
+     * @name GetClimateReportIdClimateGet
+     * @summary Get Climate
+     * @request GET:/report/{id}/climate
+     */
+    getClimateReportIdClimateGet: (id: string, params: RequestParams = {}) =>
       this.request<any, HTTPValidationError>({
-        path: `/work/${id}/workers`,
+        path: `/report/${id}/climate`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags report
+     * @name GetallCsvReportCsvGet
+     * @summary Getall Csv
+     * @request GET:/report/csv/
+     */
+    getallCsvReportCsvGet: (params: RequestParams = {}) =>
+      this.request<any, any>({
+        path: `/report/csv/`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags report
+     * @name GetCsvReportIdCsvGet
+     * @summary Get Csv
+     * @request GET:/report/{id}/csv
+     */
+    getCsvReportIdCsvGet: (id: string, params: RequestParams = {}) =>
+      this.request<any, HTTPValidationError>({
+        path: `/report/${id}/csv`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags report
+     * @name GetPdfReportIdPdfGet
+     * @summary Get Pdf
+     * @request GET:/report/{id}/pdf
+     */
+    getPdfReportIdPdfGet: (id: string, params: RequestParams = {}) =>
+      this.request<any, HTTPValidationError>({
+        path: `/report/${id}/pdf`,
         method: "GET",
         format: "json",
         ...params,
@@ -591,23 +799,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags Proprietary
-     * @name AddProprietaryProprietaryPost
-     * @summary Add Proprietary
-     * @request POST:/proprietary
+     * @name GetallProprietariesProprietaryGet
+     * @summary Getall Proprietaries
+     * @request GET:/proprietary
      */
-    addProprietaryProprietaryPost: (
-      query: {
-        /** Name */
-        name: string;
-        /** Cpf */
-        cpf: string;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<any, HTTPValidationError>({
+    getallProprietariesProprietaryGet: (params: RequestParams = {}) =>
+      this.request<ProprietaryPublic[], any>({
         path: `/proprietary`,
-        method: "POST",
-        query: query,
+        method: "GET",
         format: "json",
         ...params,
       }),
@@ -616,14 +815,16 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags Proprietary
-     * @name GetallProprietariesProprietaryGet
-     * @summary Getall Proprietaries
-     * @request GET:/proprietary
+     * @name AddProprietaryProprietaryPost
+     * @summary Add Proprietary
+     * @request POST:/proprietary
      */
-    getallProprietariesProprietaryGet: (params: RequestParams = {}) =>
-      this.request<any, any>({
+    addProprietaryProprietaryPost: (data: ProprietarySchema, params: RequestParams = {}) =>
+      this.request<ProprietaryPublic, HTTPValidationError>({
         path: `/proprietary`,
-        method: "GET",
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),
@@ -637,7 +838,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/proprietary/{id}
      */
     getProprietaryProprietaryIdGet: (id: string, params: RequestParams = {}) =>
-      this.request<any, any>({
+      this.request<ProprietaryPublic, HTTPValidationError>({
         path: `/proprietary/${id}`,
         method: "GET",
         format: "json",
@@ -653,9 +854,188 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request DELETE:/proprietary/{id}
      */
     deleteProprietaryProprietaryIdDelete: (id: string, params: RequestParams = {}) =>
-      this.request<any, HTTPValidationError>({
+      this.request<ProprietaryPublic, HTTPValidationError>({
         path: `/proprietary/${id}`,
         method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Proprietary
+     * @name GetWorksProprietaryIdWorksGet
+     * @summary Get Works
+     * @request GET:/proprietary/{id}/works
+     */
+    getWorksProprietaryIdWorksGet: (id: string, params: RequestParams = {}) =>
+      this.request<WorkPublic[], HTTPValidationError>({
+        path: `/proprietary/${id}/works`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+  };
+  work = {
+    /**
+     * No description
+     *
+     * @tags work
+     * @name GetallWorksWorkGet
+     * @summary Getall Works
+     * @request GET:/work
+     */
+    getallWorksWorkGet: (params: RequestParams = {}) =>
+      this.request<WorkPublic[], any>({
+        path: `/work`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name AddWorkWorkPost
+     * @summary Add Work
+     * @request POST:/work
+     */
+    addWorkWorkPost: (data: WorkSchema, params: RequestParams = {}) =>
+      this.request<WorkPublic, HTTPValidationError>({
+        path: `/work`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name GetWorkWorkIdGet
+     * @summary Get Work
+     * @request GET:/work/{id}
+     */
+    getWorkWorkIdGet: (id: string, params: RequestParams = {}) =>
+      this.request<WorkPublic, HTTPValidationError>({
+        path: `/work/${id}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name DeleteWorkWorkIdDelete
+     * @summary Delete Work
+     * @request DELETE:/work/{id}
+     */
+    deleteWorkWorkIdDelete: (id: string, params: RequestParams = {}) =>
+      this.request<WorkPublic, HTTPValidationError>({
+        path: `/work/${id}`,
+        method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name AddReportWorkIdAddreportPut
+     * @summary Add Report
+     * @request PUT:/work/{id}/addreport
+     */
+    addReportWorkIdAddreportPut: (
+      id: string,
+      query: {
+        /** Report Id */
+        report_id: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<WorkPublic, HTTPValidationError>({
+        path: `/work/${id}/addreport`,
+        method: "PUT",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name RemoveReportWorkIdRemovereportPut
+     * @summary Remove Report
+     * @request PUT:/work/{id}/removereport
+     */
+    removeReportWorkIdRemovereportPut: (
+      id: string,
+      query: {
+        /** Report Id */
+        report_id: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<WorkPublic, HTTPValidationError>({
+        path: `/work/${id}/removereport`,
+        method: "PUT",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name GetProprietaryWorkIdProprietaryGet
+     * @summary Get Proprietary
+     * @request GET:/work/{id}/proprietary
+     */
+    getProprietaryWorkIdProprietaryGet: (id: string, params: RequestParams = {}) =>
+      this.request<WorkPublic, HTTPValidationError>({
+        path: `/work/${id}/proprietary`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name GetReportsWorkIdReportsGet
+     * @summary Get Reports
+     * @request GET:/work/{id}/reports
+     */
+    getReportsWorkIdReportsGet: (id: string, params: RequestParams = {}) =>
+      this.request<ReportPublic[], HTTPValidationError>({
+        path: `/work/${id}/reports`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name GetWorkersWorkIdWorkersGet
+     * @summary Get Workers
+     * @request GET:/work/{id}/workers
+     */
+    getWorkersWorkIdWorkersGet: (id: string, params: RequestParams = {}) =>
+      this.request<EmployeePublic[], HTTPValidationError>({
+        path: `/work/${id}/workers`,
+        method: "GET",
         format: "json",
         ...params,
       }),

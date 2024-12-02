@@ -16,4 +16,7 @@ class ProprietaryService:
  
     def delete(self, id: str):
         return self.proprietary_repository.delete(id)
+    
+    def works(self, id: str):
+        return self.proprietary_repository.works(id)
         
