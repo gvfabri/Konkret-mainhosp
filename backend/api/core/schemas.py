@@ -46,6 +46,7 @@ class UserSchema(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
 class UserPublic(BaseModel):
+    id: Annotated[str, Query()]
     name: Annotated[str, Query()]
     cpf: Annotated[str, Query()] | None
     cnpj: Annotated[str, Query()] | None

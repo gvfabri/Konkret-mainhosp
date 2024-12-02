@@ -82,4 +82,7 @@ class UserRepository:
         return None
     
     def find_by_email(self, email: str):
-        return self.db.query(User).filter(User.email == email).first()
+        user = self.db.query(User).filter(User.email == email).first()
+        if user:
+            return user
+        return None
