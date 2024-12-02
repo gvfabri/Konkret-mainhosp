@@ -48,16 +48,26 @@ class Employee(Base):
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
+class Report(Base):
+    __tablename__ = 'reports'
+
+    id: Mapped[String] = mapped_column(String, primary_key=True, index=True,default=lambda: str(uuid4()))
+    photos = mapped_column(ARRAY(String), nullable=True)
+    observations = mapped_column(ARRAY(String), nullable=True)
+    activities = mapped_column(ARRAY(String), nullable=True)
+    work_id = mapped_column(ForeignKey("works.id"), nullable=True)
+    work = relationship("Work", back_populates="reports")
+    created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
 class Work(Base):
     __tablename__ = 'works'
 
     id: Mapped[String] = mapped_column(String, primary_key=True, index=True,default=lambda: str(uuid4()))
     address = mapped_column(String, nullable=False)
-    photos = mapped_column(ARRAY(String), nullable=True)
+    reports = relationship("Report", back_populates="work")
     proprietary_id = mapped_column(ForeignKey("proprietaries.id"), nullable=False)
     proprietary = relationship("Proprietary", back_populates="works")
-    observations = mapped_column(ARRAY(Text), nullable=True)
     workers = relationship("Employee", back_populates="work")
-    activities = mapped_column(ARRAY(String), nullable=True)
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
