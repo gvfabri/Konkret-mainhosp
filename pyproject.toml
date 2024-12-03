@@ -33,4 +33,6 @@ dependencies = [
     "fpdf>=1.7.2",
     "fpdf2>=2.8.1",
     "biblioteca>=0.0.1a2",
+    "python-jose>=3.3.0",
+    "python-multipart>=0.0.19",
 ]
