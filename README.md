@@ -41,14 +41,14 @@ uv run alembic upgrade head
 uv run uvicorn backend.api.main:app --host 0.0.0.0 --reload
 ```
 
-2. Instale o expo
-```bash
-npm install expo
-```
-
-3. Para acessar o frontend, acesse a pasta frontend
+2. Para acessar o frontend, acesse a pasta frontend
 ```bash
 cd frontend
+```
+
+3. Instale o expo
+```bash
+npm install
 ```
 
 4. Inicie o expo com o seguinte comando
