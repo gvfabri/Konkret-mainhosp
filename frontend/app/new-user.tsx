@@ -30,7 +30,7 @@ export default function NewUser() {
                     secureTextEntry
                 />
                 <Pressable style={styles.formButton}>
-                    <text style={styles.textButton}>Criar conta</text>
+                    <Text style={styles.textButton}>Criar conta</Text>
                 </Pressable>
                 <Link href="/" style={styles.subButton}>
                     <Text style={styles.subTextButton}>Voltar para o Login</Text>
