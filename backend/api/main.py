@@ -2,13 +2,11 @@ from fastapi import FastAPI
 from backend.api.routers import report, user, employee, proprietary, work
 from fastapi.middleware.cors import CORSMiddleware
 
-
 app = FastAPI()
 
 origins = [
     'http://localhost:8000',
-    'http://localhost:5173',
-    'http://localhost:5434',
+    'http://localhost:8081',
 ]
 
 app.add_middleware(

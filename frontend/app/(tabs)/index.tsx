@@ -1,27 +1,45 @@
 import { Link, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { Pressable, TextInput, View, Text } from "react-native";
-import { styles } from '../src/styles';
+import { styles } from '@/src/styles';
+import React from "react";
+import apiClient from "@/src/api/ApiClient";
 
 export default function RootLayout() {
+
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+
+  function login(email: string, password: string) {
+    apiClient.user.loginUserLoginPost({username: email, password }).then((response) => {
+      console.log(response);
+    }).catch((error) => {
+      console.error(error);
+    }); 
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.loginBox}>
         <Text style={styles.formTitle}>Login no Sistema</Text>
         <TextInput
           style={styles.formInput}
-          placeholder="Informe o E-Mail"
+          value={email}
+          onChangeText={(text) => setEmail(text)}
+          placeholder="E-Mail"
           keyboardType="email-address"
           autoCapitalize="none"
           autoComplete="email"
         />
         <TextInput
           style={styles.formInput}
+          value={password}
+          onChangeText={(text) => setPassword(text)}
           placeholder="Informe a Senha"
           autoCapitalize="none"
           secureTextEntry
         />
-        <Pressable style={styles.formButton}>
+        <Pressable style={styles.formButton} onPress={() => login(email, password)}>
           <Text style={styles.textButton}>Logar</Text>
         </Pressable>
         <View style={styles.subContainer}>
@@ -30,6 +48,7 @@ export default function RootLayout() {
           </Pressable>
           <Link href="/new-user" style={styles.subButton}>
             <Text style={styles.subTextButton}>Novo usuário</Text>
+            
           </Link>
         </View>
       </View>
