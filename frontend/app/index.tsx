@@ -46,7 +46,7 @@ export default function RootLayout() {
           <Pressable style={styles.subButton}>
             <Text style={styles.subTextButton}>Esqueci a senha</Text>
           </Pressable>
-          <Link href="/new-user" style={styles.subButton}>
+          <Link href="/user_register/register_options" style={styles.subButton}>
             <Text style={styles.subTextButton}>Novo usuário</Text>
             
           </Link>
