@@ -42,12 +42,14 @@ export const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 10,
         alignItems: 'center',
+        justifyContent: 'center',
     },
     textButton: {
         color: 'white',
         fontSize: 20,
         fontWeight: 'bold',
-    },
+        textAlign: 'center',
+    },    
     subContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -58,6 +60,11 @@ export const styles = StyleSheet.create({
     },
     subTextButton: {
         color: 'blueviolet',
+    },
+    errorText: {
+        color: "red",
+        fontSize: 14,
+        marginTop: 10,
+        textAlign: "center",
     }
-
 })
