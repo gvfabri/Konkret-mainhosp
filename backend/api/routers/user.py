@@ -73,14 +73,14 @@ def getall_users(
     
 @router.get("/{id}", response_model=UserPublic)
 def get_user(
-    id: str,
     user_service: Annotated[UserService, Depends(get_user_service)],
-    user_logged: User = Depends(get_current_user)
+    user_logged: User = Depends(get_current_user),
+    id: str | None = None,
 ):
     if not user_logged:
         raise HTTPException(status_code=404, detail="Usuário logado não encontrado.")
     try:
-        return user_service.get(id)
+        return user_service.get(user_logged.id)
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
     

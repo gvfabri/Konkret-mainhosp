@@ -14,6 +14,11 @@ export interface ActivityPublic {
     /** Activity */
     activity: string;
   }
+
+  export interface LoginResponse {
+    access_token: string;
+    token_type: string;
+  }
   
   /** ActivitySchema */
   export interface ActivitySchema {
@@ -471,7 +476,7 @@ export interface ActivityPublic {
        * @request POST:/user/login
        */
       loginUserLoginPost: (data: BodyLoginUserLoginPost, params: RequestParams = {}) =>
-        this.request<object, HTTPValidationError>({
+        this.request<LoginResponse, HTTPValidationError>({
           path: `/user/login`,
           method: "POST",
           body: data,
