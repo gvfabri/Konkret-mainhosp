@@ -2,19 +2,31 @@ import { Link, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { Pressable, TextInput, View, Text } from "react-native";
 import { styles } from '@/src/styles/login_styles';
-import React from "react";
+import { useState} from "react";
 import apiClient from "@/src/api/ApiClient";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
+async function saveToken(key: string, value: string) {
+  try {
+    await AsyncStorage.setItem(key, value);
+  } catch (error) {
+    console.error("Erro", error)
+  }
+}
 
 export default function RootLayout() {
-
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const router = useRouter();
 
   function login(email: string, password: string) {
-    apiClient.user.loginUserLoginPost({username: email, password }).then((response) => {
-      console.log(response);
+    apiClient.user.loginUserLoginPost({username: email, password }).then(async (response) => {
+      const data = response.data
       if (response && response.status === 200) {
+        console.log('Login bem-sucedido, redirecionando...');
+        const token = data.access_token;
+        await saveToken("authToken", token);
         router.push("/dashboard/projects")
       }
       
