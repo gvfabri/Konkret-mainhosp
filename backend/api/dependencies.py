@@ -9,6 +9,10 @@ from backend.api.services.employee_service import EmployeeService
 from backend.api.services.report_service import ReportService
 from backend.api.services.proprietary_service import ProprietaryService
 from backend.api.services.work_service import WorkService
+from backend.api.services.equipment_service import EquipmentService
+from backend.api.services.rent_equipment_service import RentEquipmentService
+from backend.api.services.job_service import JobService
+from backend.api.services.material_service import MaterialService
 from backend.api.core.session import get_db
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
@@ -29,6 +33,18 @@ def get_proprietary_service(db: Annotated[Session, Depends(get_db)]):
 
 def get_work_service(db: Annotated[Session, Depends(get_db)]):
     return WorkService(db)
+
+def get_equipment_service(db: Annotated[Session, Depends(get_db)]):
+    return EquipmentService(db)
+
+def get_rent_equipment_service(db: Annotated[Session, Depends(get_db)]):
+    return RentEquipmentService(db)
+
+def get_job_service(db: Annotated[Session, Depends(get_db)]):
+    return JobService(db)
+
+def get_material_service(db: Annotated[Session, Depends(get_db)]):
+    return MaterialService(db)
 
 class TokenPayload(BaseModel):
     sub: Optional[str] = None

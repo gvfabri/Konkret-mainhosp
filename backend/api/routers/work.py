@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request, Query, Depends, HTTPException
 from typing import Annotated, List
 from backend.api.core.models import User
 from backend.api.services.work_service import WorkService
-from backend.api.core.schemas import WorkSchema, WorkPublic, EmployeePublic, ReportPublic
+from backend.api.core.schemas import WorkSchema, WorkPublic, EmployeePublic, ReportPublic, EquipmentPublic
 from backend.api.dependencies import get_work_service, get_current_user
 
 router = APIRouter(
@@ -19,11 +19,11 @@ def add_work(
     if not user_logged:
         raise HTTPException(status_code=404, detail="Usuário logado não encontrado.")
     try:
-        return work_service.create_work(work.proprietary_id, work.address)
+        return work_service.create_work(work.proprietary_id, work.name, work.zip_code, work.state, work.public_place, work.neighborhood, work.number_addres, work.start_date, work.end_date)
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
     
-@router.get("", response_model=List[WorkPublic])
+@router.get("",response_model=List[WorkPublic])
 def getall_works(
     work_service: Annotated[WorkService, Depends(get_work_service)],
     user_logged: User = Depends(get_current_user)
@@ -59,7 +59,7 @@ def delete_work(
     try:
         return work_service.delete(id)
     except Exception as e:
-        raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
+        raise HTTPException(status_code=e.status_code,detail=f"Deu erro: {e.detail}")
     
 @router.put("/{id}/addreport", response_model=WorkPublic)
 def add_report(
@@ -125,5 +125,25 @@ def get_workers(
         raise HTTPException(status_code=404, detail="Usuário logado não encontrado.")
     try:
         return work_service.workers(id)
+    except Exception as e:
+        raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
+    
+@router.get("/{id}/equipments", response_model=List[EquipmentPublic])
+def get_equipments(
+    id: str,
+    work_service: Annotated[WorkService, Depends(get_work_service)]
+):
+    try:
+        return work_service.get_equipments(id)
+    except Exception as e:
+        raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
+    
+@router.get("/{id}/employees", response_model=List[EmployeePublic])
+def get_employees(
+    id: str,
+    work_service: Annotated[WorkService, Depends(get_work_service)]
+):
+    try:
+        return work_service.get_employees(id)
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")

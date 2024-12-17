@@ -82,6 +82,15 @@ def verify_password(senha: str, hash_senha: str) -> bool:
 def cpf_normalize(cpf: str) -> str:
     return re.sub(r'[^0-9]', '', cpf)
 
+def validate_phone_number(phone: str) -> bool:
+    """
+    Valida o número no formato +55 12 12345-6789
+    """
+    # Regex atualizado e restritivo
+    pattern = r"^\+55\s\d{2}\s\d{5}-\d{4}$"
+    
+    return bool(re.fullmatch(pattern, phone))
+
 def create_token(subject: Union[str, Any]) ->  str:
     expire = dt.datetime.now(dt.timezone.utc) + dt.timedelta(hours=ACCESS_TOKEN_EXPIRE_HOURS)
     to_encode = {"exp": expire, "sub": str(subject)}
@@ -98,3 +107,10 @@ def get_weather(lat: float, lon: float):
     url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid=b1c7ce8cfdef7802eafd6a2189e8edfb&lang=pt_br&units=metric"
     response = requests.get(url)
     return response.json()
+
+
+#ID user: b6a93652-7fac-41d9-9416-e65fe5c4a331
+#ID propriwtario: 8b74eacd-ce2d-4efd-89d0-89fa098d8a1c
+#ID Work: 430ece33-53f5-423a-a0aa-e774b432db5f
+#ID Report: 19934ad1-8974-430e-b9d4-a1260b3c9655
+#ID Material: 48053997-720d-434c-846b-dc28a3218cef
