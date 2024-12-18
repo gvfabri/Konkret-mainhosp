@@ -102,6 +102,12 @@ export const new_project_styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
+  label: {
+    fontSize: 14, // Um pouco menor que o texto de entrada
+    color: "#555", // Cinza para contraste
+    marginBottom: 4, // Espaço entre o label e o campo
+    fontWeight: "500", // Peso médio para dar destaque
+  },
 });
 
 export const user_styles = StyleSheet.create({
