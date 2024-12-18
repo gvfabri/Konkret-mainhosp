@@ -103,15 +103,14 @@ class JobSchemaPublic(BaseModel):
     
 
 class WorkSchema(BaseModel):
-    proprietary_id: Annotated[str, Query()]
-    name: Annotated[str, Query()]
-    zip_code: Annotated[str, Query()]
-    state: Annotated[str, Query()]
-    neighborhood: Annotated[Optional[str], Query()] = None
-    public_place: Annotated[str, Query()]
-    number_addres: Annotated[Optional[int], Query()] = None
-    start_date: Annotated[Optional[datetime], Query()] = None
-    end_date: Annotated[Optional[datetime], Query()] = None
+    name: str
+    zip_code: str
+    state: str
+    neighborhood: Optional[str] = None
+    public_place: str
+    number_addres: Optional[int] = None
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
 
 class WorkPublic(BaseModel):
     id: Annotated[str, Query()]
@@ -123,7 +122,7 @@ class WorkPublic(BaseModel):
     number_addres: Annotated[Optional[int], Query()] = None
     start_date: Annotated[Optional[datetime], Query()] = None
     end_date: Annotated[Optional[datetime], Query()] = None
-    proprietary_id: Annotated[str, Query()]
+    user_id: Annotated[str, Query()]
     rentequipment: Optional[List[RentEquipmentSchemaPublic]] = None
     jobs: Optional[List[JobSchemaPublic]] = None
     created_at: Annotated[datetime, Query()]

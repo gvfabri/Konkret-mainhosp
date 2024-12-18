@@ -36,7 +36,7 @@ export default function User() {
             email: user.email || "N/A",
             projects: "0",
             reports: "0",
-            phone: "no phone"
+            phone: user.phone
           });
         }
       })

@@ -14,12 +14,14 @@ export default function NewUser() {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
     const [cpf, setCpf] = React.useState("");
+    const [phone, setPhone] = React.useState("");
     const router = useRouter();
 
-    function createUser(name: string, email: string, password: string, cpf: string) {
+    function createUser(name: string, email: string, password: string, cpf: string, phone: string) {
         apiClient.user.addUserUserPost({
         name,
         email,
+        phone,
         password,
         cpf,
         user_type: UserType.PF,
@@ -52,15 +54,22 @@ export default function NewUser() {
                     keyboardType="email-address"
                     autoCapitalize="none"
                     autoComplete="email"
-                    />
-                    <TextInput
+                />
+                <TextInput
                     style={styles.formInput}
                     value={cpf}
                     onChangeText={(text) => setCpf(text)}
                     placeholder="CPF"
                     autoCapitalize="none"
-                    />
-                    <TextInput
+                />
+                <TextInput
+                    style={styles.formInput}
+                    value={phone}
+                    onChangeText={(text) => setPhone(text)}
+                    placeholder="telefone"
+                    autoCapitalize="none"
+                />
+                <TextInput
                     style={styles.formInput}
                     value={password}
                     onChangeText={(text) => setPassword(text)}
@@ -68,7 +77,7 @@ export default function NewUser() {
                     autoCapitalize="none"
                     secureTextEntry
                 />
-                <Pressable style={styles.formButton} onPress={() => createUser(name, email, password, cpf)}>
+                <Pressable style={styles.formButton} onPress={() => createUser(name, email, password, cpf, phone)}>
                     <Text style={styles.textButton}>Criar conta</Text>
                 </Pressable>
                 <Link href="/user_register/register_options" style={styles.subButton}>
