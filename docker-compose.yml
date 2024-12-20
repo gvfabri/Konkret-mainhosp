@@ -1,16 +1,16 @@
 version: "3.9"
+
 services:
-  api:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    command: uv run uvicorn backend.api.main:app --host 0.0.0.0 --port 8000
+  web:
+    build: .
     ports:
       - "8000:8000"
-    environment:
-      - DATABASE_URL=postgresql://postgres:postgres:5432/postgres_db
     depends_on:
       - db
+    volumes:
+      - .:/app
+    command: >
+      sh -c "uv sync && uv run alembic upgrade head && uv run uvicorn backend.api.main:app --host 0.0.0.0 --reload"
   db:
     image: postgres:latest
     environment:
