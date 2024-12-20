@@ -1,17 +1,11 @@
-# Use uma imagem base oficial do Python
-FROM python:3.10
+FROM python:3.12-slim
 
-# Crie um diretório de trabalho
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/ 
+
+COPY . /app
+
 WORKDIR /app
 
-# Instale o uv
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+RUN uv sync --frozen --no-cache
 
-# Copie todos os arquivos do app para o diretório de trabalho
-COPY . .
-
-# Exponha a porta em que a aplicação será executada
-EXPOSE 8000
-
-# Comando para rodar a aplicação
-CMD ["sh", "-c", "uv sync && uv run alembic upgrade head && uv run uvicorn backend.api.main:app --host 0.0.0.0 --reload"]
+CMD ["/app/.venv/bin/fastapi", "run", "app/main.py", "--port", "80", "--host", "0.0.0.0"]
