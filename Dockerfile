@@ -1,23 +1,21 @@
-# Escolher a imagem base do Python
+# Etapa 1: Base do Python
 FROM python:3.11-slim
-
-# Instalar dependências do sistema necessárias (curl e qualquer outro pacote necessário)
-RUN apt-get update && apt-get install -y curl
-
-# Instalar o gerenciador de pacotes 'uv' diretamente com o Python (caso o comando 'curl' falhe)
-RUN pip install uv
 
 # Definir o diretório de trabalho
 WORKDIR /app
 
-# Copiar todos os arquivos do repositório para o diretório de trabalho no container
-COPY . /app
+# Copiar os arquivos do projeto para o container
+COPY . .
 
-# Sincronizar as dependências com o 'uv'
-RUN uv sync
+# Instalar dependências
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Expor a porta que o FastAPI irá rodar
+# Instalar o uv para gerenciar a execução
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Expor a porta da API
 EXPOSE 8000
 
-# Comando para rodar a aplicação (substitua o caminho para o arquivo main correto, caso necessário)
-CMD ["uv", "run", "uvicorn", "backend.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+# Comando para rodar a API com o Uvicorn
+CMD ["sh", "-c", "uv run alembic upgrade head && uv run uvicorn backend.api.main:app --host 0.0.0.0 --reload"]
