@@ -1,9 +1,10 @@
 [build]
   base = "frontend"
-  command = "npm install && npm run build"
-  publish = "frontend/web-build"
+  command = "npm install --legacy-peer-deps && npm run build"
+  publish = "web-build"
 
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+  force = true
