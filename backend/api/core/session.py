@@ -3,7 +3,19 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 import os
 from pydantic import BaseModel
 from backend.api.core.models import Base
+import psycopg2
 
+# Get the database credentials from environment variables
+host = os.environ.get('DB_HOST')
+database = os.environ.get('DB_NAME')
+user = os.environ.get('DB_USER')
+password = os.environ.get('DB_PASSWORD')
+
+# Define the connection string
+connection_string = f"host={host} dbname={database} user={user} password={password}"
+
+# Connect to the database
+connection = psycopg2.connect(connection_string)
 
 # Pega a URL do banco de dados do arquivo .env
 #DATABASE_URL = os.getenv("DATABASE_URL")
