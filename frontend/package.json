@@ -9,7 +9,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "test": "jest --watchAll",
-    "build": "expo build:web",
+    "build": "npx expo export",
     "lint": "expo lint",
     "generate:types": "curl http://localhost:8001/openapi.json -o openapi.json && swagger-typescript-api -p openapi.json -o src/api  --axios"
   },
